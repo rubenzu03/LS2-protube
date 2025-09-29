@@ -1,0 +1,1 @@
+python .\main.py --store=./store --id=10 --recreate --videos=../../resources/video_list.txt

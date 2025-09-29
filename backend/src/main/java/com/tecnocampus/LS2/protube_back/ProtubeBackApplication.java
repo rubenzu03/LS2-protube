@@ -9,5 +9,4 @@ public class ProtubeBackApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ProtubeBackApplication.class, args);
 	}
-
 }

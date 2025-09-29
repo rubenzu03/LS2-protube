@@ -144,6 +144,7 @@ def grab_videos():
             grab_video(video, id)
         except FileNotFoundError as e:
             print(f"Error with video: {video} -- Skipped")
+            print(e)
 
     print(f"Picking your videos... done")
 
