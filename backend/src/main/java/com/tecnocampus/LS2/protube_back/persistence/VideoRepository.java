@@ -21,6 +21,6 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
 
     void deleteById(Long id);
 
-    @Query("UPDATE videos v SET v.id = :newId WHERE v.id = v.id")
+    @Query("UPDATE videos v SET v.id = :newId WHERE v.id = :id")
     void updateId(Long id, Long newId);
 }

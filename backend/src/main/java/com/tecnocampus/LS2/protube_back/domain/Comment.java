@@ -1,8 +1,6 @@
 package com.tecnocampus.LS2.protube_back.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,5 +11,10 @@ public class Comment {
     @Id
     private Long id;
     private String content;
-    @ManyToOne private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+    @ManyToOne
+    @JoinColumn(name = "video_id")
+    private Video video;
 }
