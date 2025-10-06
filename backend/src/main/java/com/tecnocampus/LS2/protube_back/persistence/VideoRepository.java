@@ -17,7 +17,6 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     @Override
     List<Video> findAll();
 
-    //TODO: Cambiar DTO
     Video save(Video video);
 
     void deleteById(Long id);
