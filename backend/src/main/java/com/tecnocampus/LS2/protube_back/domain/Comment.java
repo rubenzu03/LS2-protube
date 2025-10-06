@@ -6,7 +6,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
+@Entity(name = "comments")
 @Getter
 @Setter
 public class Comment {
