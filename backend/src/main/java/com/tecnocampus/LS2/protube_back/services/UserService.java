@@ -1,5 +1,8 @@
 package com.tecnocampus.LS2.protube_back.services;
 
+import com.tecnocampus.LS2.protube_back.domain.User;
+import com.tecnocampus.LS2.protube_back.persistence.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -7,24 +10,30 @@ import java.util.List;
 @Service
 public class UserService {
 
-    public List<String> getUsers() {
-        return List.of("user1", "user2");
+    @Autowired
+    public UserRepository userRepository;
+
+    public UserService() {
     }
 
-    public String getUserById(String userId) {
-        // Logic to get a user by its ID
-        return "userDetails";
+    public List<User> getUsers() {
+        return userRepository.findAll();
     }
 
-    public void createUser(String username) {
-        // Logic to create a user
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
-    public void deleteUser(String userId) {
-        // Logic to delete a user
+    public void createUser(User user) {
+        userRepository.save(user);
     }
 
-    public void updateUser(String userId, String newUsername) {
-        // Logic to update a user
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public void updateUser(Long id, User user) {
+        user.setId(id);
+        userRepository.save(user);
     }
 }
