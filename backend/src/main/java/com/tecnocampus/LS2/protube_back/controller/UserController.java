@@ -1,6 +1,5 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
-import com.tecnocampus.LS2.protube_back.domain.User;
 import com.tecnocampus.LS2.protube_back.persistence.dto.UserDTO;
 import com.tecnocampus.LS2.protube_back.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,29 +16,27 @@ public class UserController {
     UserService userService;
 
     @GetMapping("")
-    public ResponseEntity<List<User>> getCategories() {
+    public ResponseEntity<List<UserDTO>> getCategories() {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
         return ResponseEntity.ok().body(userService.getUserById(id));
     }
 
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody UserDTO userDTO) {
-        return ResponseEntity.created(userService.createUser(userDTO)).body("User created successfully");
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+        return ResponseEntity.created(userService.createUser(userDTO)).body(userDTO);
     }
 
     @DeleteMapping ("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok().body("User deleted successfully");
+    public ResponseEntity<UserDTO> deleteUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.deleteUser(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-        userService.updateUser(id, userDTO);
-        return ResponseEntity.ok().body("User updated successfully");
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(userService.updateUser(id, userDTO));
     }
 }

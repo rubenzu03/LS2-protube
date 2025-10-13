@@ -15,22 +15,28 @@ public class VideoController {
     @Autowired
     VideoService videoService;
 
-    @GetMapping("")
+    @GetMapping()
     public ResponseEntity<List<VideoDTO>> getVideos() {
         return ResponseEntity.ok().body(videoService.getVideos());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity
-
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadVideo(@RequestBody VideoDTO videoDTO) {
-        videoService.createVideo(videoDTO);
-        return ResponseEntity.ok().body("Video uploaded successfully");
+    public ResponseEntity<VideoDTO> getVideo(@PathVariable Long id) {
+        return ResponseEntity.ok().body(videoService.getVideoById(id));
     }
 
+    @PostMapping
+    public ResponseEntity<VideoDTO> createVideo(@RequestBody VideoDTO videoDTO) {
+        return ResponseEntity.created(videoService.createVideo(videoDTO)).body(videoDTO);
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<VideoDTO> deleteVideo(@PathVariable Long id) {
+        return ResponseEntity.ok(videoService.deleteVideo(id));
+    }
 
-
-
+    @PutMapping("/{id}")
+    public ResponseEntity<VideoDTO> updateVideo(@PathVariable Long id, @RequestBody VideoDTO videoDTO) {
+        return ResponseEntity.ok(videoService.updateVideo(id, videoDTO));
+    }
 }
