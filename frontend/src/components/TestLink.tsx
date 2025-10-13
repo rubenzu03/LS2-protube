@@ -5,7 +5,7 @@ import { ReactNode, useState } from 'react';
 
 const STATUS = {
   HOVERED: 'hovered',
-  NORMAL: 'normal',
+  NORMAL: 'normal'
 };
 
 interface Props {
