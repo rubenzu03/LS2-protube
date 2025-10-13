@@ -1,5 +1,8 @@
 package com.tecnocampus.LS2.protube_back.services;
 
+import com.tecnocampus.LS2.protube_back.domain.Category;
+import com.tecnocampus.LS2.protube_back.persistence.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -7,24 +10,30 @@ import java.util.List;
 @Service
 public class CategoryService {
 
-    public List<String> getCategories() {
-        return List.of("category1", "category2");
+    @Autowired
+    public CategoryRepository CategoryRepository;
+
+    public CategoryService() {
     }
 
-    public String getCategoryById(String categoryId) {
-        // Logic to get a category by its ID
-        return "categoryDetails";
+    public List<Category> getCategories() {
+        return CategoryRepository.findAll();
     }
 
-    public void createCategory(String name) {
-        // Logic to create a category
+    public Category getCategoryById(Long id) {
+        return CategoryRepository.findById(id).orElse(null);
     }
 
-    public void deleteCategory(String categoryId) {
-        // Logic to delete a category
+    public void createCategory(Category Category) {
+        CategoryRepository.save(Category);
     }
 
-    public void updateCategory(String categoryId, String newName) {
-        // Logic to update a category
+    public void deleteCategory(Long id) {
+        CategoryRepository.deleteById(id);
+    }
+
+    public void updateCategory(Long id, Category newCategory) {
+        newCategory.setId(id);
+        CategoryRepository.save(newCategory);
     }
 }
