@@ -17,14 +17,14 @@ public class Video {
     private float width;
     private float height;
     private float duration;
+    private String description;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    private String description;
     @ManyToMany
     private List<Category> categories;
-    @ElementCollection
-    private List<String> tags;
+    @ManyToMany
+    private List<Tag> tags;
     @OneToMany(mappedBy = "video")
     private List<Comment> comments;
 }
