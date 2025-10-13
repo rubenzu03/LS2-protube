@@ -15,8 +15,4 @@ public class User {
     @Id
     private Long id;
     private String username;
-    @OneToMany(mappedBy = "user")
-    private List<Video> videos;
-    @OneToMany(mappedBy = "user")
-    private List<Comment> comments;
 }
