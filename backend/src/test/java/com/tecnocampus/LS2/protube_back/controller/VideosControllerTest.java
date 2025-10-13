@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 class VideosControllerTest {
 
     @InjectMocks
-    VideosController videosController;
+    VideoController videosController;
 
     @Autowired
     @Mock
