@@ -23,8 +23,8 @@ public class Video {
     private String description;
     @ManyToMany
     private List<Category> categories;
-    @ElementCollection
-    private List<String> tags;
+    @ManyToMany
+    private List<Tag> tags;
     @OneToMany(mappedBy = "video")
     private List<Comment> comments;
 }
