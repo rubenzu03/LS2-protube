@@ -1,5 +1,8 @@
 package com.tecnocampus.LS2.protube_back.services;
 
+import com.tecnocampus.LS2.protube_back.domain.Comment;
+import com.tecnocampus.LS2.protube_back.persistence.CommentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -7,24 +10,30 @@ import java.util.List;
 @Service
 public class CommentService {
 
-    public List<String> getComments() {
-        return List.of("comment1", "comment2");
+    @Autowired
+    public CommentRepository commentRepository;
+
+    public CommentService() {
     }
 
-    public String getCommentById(String commentId) {
-        // Logic to get a comment by its ID
-        return "commentDetails";
+    public List<Comment> getComments() {
+        return commentRepository.findAll();
     }
 
-    public void createComment(String content) {
-        // Logic to create a comment
+    public Comment getCommentById(Long id) {
+        return commentRepository.findById(id).orElse(null);
     }
 
-    public void deleteComment(String commentId) {
-        // Logic to delete a comment
+    public void createComment(Comment comment) {
+        commentRepository.save(comment);
     }
 
-    public void updateComment(String commentId, String newContent) {
-        // Logic to update a comment
+    public void deleteComment(Long id) {
+        commentRepository.deleteById(id);
+    }
+
+    public void updateComment(Long id, Comment newComment) {
+        newComment.setId(id);
+        commentRepository.save(newComment);
     }
 }
