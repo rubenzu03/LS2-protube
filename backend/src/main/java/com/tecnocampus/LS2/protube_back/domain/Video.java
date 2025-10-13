@@ -1,14 +1,13 @@
 package com.tecnocampus.LS2.protube_back.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
-@Entity
+
+@Entity (name = "videos")
 @Getter
 @Setter
 public class Video {
@@ -18,9 +17,14 @@ public class Video {
     private float width;
     private float height;
     private float duration;
-    private String user;
     private String description;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     @ManyToMany
     private List<Category> categories;
-    private List<String> tags;
+    @ManyToMany
+    private List<Tag> tags;
+    @OneToMany(mappedBy = "video")
+    private List<Comment> comments;
 }

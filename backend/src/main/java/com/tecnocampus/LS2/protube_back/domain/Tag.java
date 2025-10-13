@@ -5,10 +5,10 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity(name = "categories")
+@Entity(name = "tags")
 @Getter
 @Setter
-public class Category {
+public class Tag {
     @Id
     private Long id;
     private String name;

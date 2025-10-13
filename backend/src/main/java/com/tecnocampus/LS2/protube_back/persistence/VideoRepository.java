@@ -2,6 +2,7 @@ package com.tecnocampus.LS2.protube_back.persistence;
 
 import com.tecnocampus.LS2.protube_back.domain.Video;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +22,7 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
 
     void deleteById(Long id);
 
-    @Query("UPDATE videos v SET v.id = :newId WHERE v.id = v.id")
+    @Modifying
+    @Query("UPDATE videos v SET v.id = :newId WHERE v.id = :id")
     void updateId(Long id, Long newId);
 }
