@@ -8,7 +8,7 @@ export default {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   testEnvironment: 'jest-environment-jsdom',
   transform: {
-    ...tsJestTransformCfg,
+    ...tsJestTransformCfg
   },
   collectCoverage: true,
   coverageReporters: ['json', 'html'],
@@ -17,7 +17,7 @@ export default {
       branches: 75,
       functions: 75,
       lines: 75,
-      statements: 75,
-    },
-  },
+      statements: 75
+    }
+  }
 };

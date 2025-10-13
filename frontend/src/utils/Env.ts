@@ -4,6 +4,6 @@ export const getEnv = () => {
   return {
     API_BASE_URL: `${VITE_API_DOMAIN}/api`,
     MEDIA_BASE_URL: `${VITE_MEDIA_DOMAIN}/media`,
-    __vite__: otherViteConfig,
+    __vite__: otherViteConfig
   };
 };
