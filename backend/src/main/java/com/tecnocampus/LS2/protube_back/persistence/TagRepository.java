@@ -8,8 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    Optional<Tag> findById(Long id);
-    void deleteById(Long id);
-    Tag save(Tag tag);
 }
 

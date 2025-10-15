@@ -13,10 +13,10 @@ import java.util.List;
 @Service
 public class CommentService {
 
-    @Autowired
-    public CommentRepository commentRepository;
+    public final CommentRepository commentRepository;
 
-    public CommentService() {
+    public CommentService(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
     }
 
     public List<CommentDTO> getComments() {

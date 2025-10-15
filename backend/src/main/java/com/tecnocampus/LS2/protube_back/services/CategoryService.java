@@ -13,10 +13,10 @@ import java.util.List;
 @Service
 public class CategoryService {
 
-    @Autowired
-    public CategoryRepository CategoryRepository;
+    public final CategoryRepository CategoryRepository;
 
-    public CategoryService() {
+    public CategoryService(CategoryRepository CategoryRepository) {
+        this.CategoryRepository = CategoryRepository;
     }
 
     public List<CategoryDTO> getCategories() {

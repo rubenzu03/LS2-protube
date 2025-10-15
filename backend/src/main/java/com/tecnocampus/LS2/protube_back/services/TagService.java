@@ -13,10 +13,10 @@ import java.util.List;
 @Service
 public class TagService {
 
-    @Autowired
-    public TagRepository tagRepository;
+    public final TagRepository tagRepository;
 
-    public TagService() {
+    public TagService(TagRepository tagRepository) {
+        this.tagRepository = tagRepository;
     }
 
     public List<TagDto> getTags() {

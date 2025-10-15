@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    @Autowired
-    public UserRepository userRepository;
+    public final UserRepository userRepository;
 
-    public UserService() {
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public List<UserDTO> getUsers() {

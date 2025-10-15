@@ -13,10 +13,10 @@ import java.util.List;
 @Service
 public class VideoService {
 
-    @Autowired
-    public VideoRepository videoRepository;
+    public final VideoRepository videoRepository;
 
-    public VideoService() {
+    public VideoService(VideoRepository videoRepository) {
+        this.videoRepository = videoRepository;
     }
 
     public List<VideoDTO> getVideos() {
