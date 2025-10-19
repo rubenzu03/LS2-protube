@@ -14,19 +14,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
-
-    @Override
-    List<User> findAll();
-
-    @Override
-    Optional<User> findById(Long id);
-
-    @Override
-    void deleteById(Long id);
-
     @Modifying
     @Query("UPDATE users u SET u.id = :newId WHERE u.id = :id")
     void updateId(Long id, Long newId);
-
-    User save(User user);
 }

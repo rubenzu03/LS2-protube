@@ -7,7 +7,9 @@ import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.CommentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @Service
@@ -63,8 +65,10 @@ public class CommentService {
         );
     }
 
-    public void deleteComment(Long id) {
+    public CommentDTO deleteComment(Long id) {
+        CommentDTO commentDTO = getCommentById(id);
         commentRepository.deleteById(id);
+        return commentDTO;
     }
 
     public CommentDTO updateComment(Long id, CommentDTO dto) {

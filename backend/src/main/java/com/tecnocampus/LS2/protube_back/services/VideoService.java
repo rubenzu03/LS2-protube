@@ -6,6 +6,7 @@ import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.VideoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Collections;
 import java.util.List;
@@ -74,10 +75,38 @@ public class VideoService {
     public void createVideo(VideoDTO videoDTO) {
         Video video = new Video(videoDTO);
         videoRepository.save(video);
+        return ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(video.getId())
+                .toUri();
     }
 
-    public void deleteVideo(Long id) {
+    public VideoDTO deleteVideo(Long id) {
+        VideoDTO videoDTO = getVideoById(id);
         videoRepository.deleteById(id);
+        return videoDTO;
+    }
+
+    public VideoDTO updateVideo(Long id, VideoDTO videoDTO) {
+        Video video = toEntity(videoDTO);
+        video.setId(id);
+        videoRepository.save(video);
+        return toDTO(video);
+    }
+
+    private VideoDTO toDTO(Video video) {
+        return new VideoDTO(
+                video.getId(),
+                video.getTitle(),
+                video.getWidth(),
+                video.getHeight(),
+                video.getDuration(),
+                video.getDescription(),
+                video.getUser() != null ? video.getUser().getId() : null,
+                video.getCategories() != null && !video.getCategories().isEmpty() ? video.getCategories().get(0).getId() : null,
+                video.getTags() != null ? video.getTags().stream().map(tag -> tag.getName()).toList() : null,
+                video.getComments() != null && !video.getComments().isEmpty() ? video.getComments().get(0).getId() : null
+        );
     }
 
     public void updateVideo(Long id, VideoDTO videoDTO) {

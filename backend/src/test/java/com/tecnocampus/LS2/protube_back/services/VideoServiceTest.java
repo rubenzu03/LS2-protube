@@ -1,5 +1,8 @@
 package com.tecnocampus.LS2.protube_back.services;
 
+import com.tecnocampus.LS2.protube_back.domain.Video;
+import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
+import com.tecnocampus.LS2.protube_back.persistence.dto.VideoDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -33,4 +36,7 @@ class VideoServiceTest {
                 videoService.getVideos().stream().map(Video::getTitle).toList());
     }
 
+        List<VideoDTO> result = videoService.getVideos();
+        assertEquals(List.of("video1","video2"), result.stream().map(VideoDTO::title).toList());
+    }
 }

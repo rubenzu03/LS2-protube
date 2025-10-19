@@ -1,11 +1,17 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ExtendWith(MockitoExtension.class)
 class IndexControllerTest {
-    IndexController indexController = new IndexController();
+
+    @InjectMocks
+    IndexController indexController;
 
     @Test
     void home() {

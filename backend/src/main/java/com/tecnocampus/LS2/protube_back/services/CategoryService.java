@@ -5,7 +5,9 @@ import com.tecnocampus.LS2.protube_back.persistence.CategoryRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.CategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @Service

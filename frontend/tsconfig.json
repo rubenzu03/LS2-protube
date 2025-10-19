@@ -1,8 +1,15 @@
 {
-  "extends": ["./tsconfig.app.json", "./tsconfig.node.json", "./tsconfig.configs.json"],
-  "include": ["src", "vite.config.ts", "jest-setup.js"],
-  "exclude": ["node_modules", "dist"],
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
   "compilerOptions": {
-    "jsx": "react-jsx"
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   }
 }
