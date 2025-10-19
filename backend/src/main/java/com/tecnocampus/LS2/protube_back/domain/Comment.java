@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.domain;
 
+import com.tecnocampus.LS2.protube_back.persistence.dto.CommentDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Comment {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
     private String content;
@@ -17,4 +19,12 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "video_id")
     private Video video;
+
+    public Comment() {
+    }
+
+    public Comment(CommentDTO commentDto) {
+        this.id = commentDto.id();
+        this.content = commentDto.content();
+    }
 }

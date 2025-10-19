@@ -27,16 +27,19 @@ public class VideoController {
 
     @PostMapping
     public ResponseEntity<VideoDTO> createVideo(@RequestBody VideoDTO videoDTO) {
-        return ResponseEntity.created(videoService.createVideo(videoDTO)).body(videoDTO);
+        videoService.createVideo(videoDTO);
+        return ResponseEntity.ok().body(videoDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<VideoDTO> deleteVideo(@PathVariable Long id) {
-        return ResponseEntity.ok(videoService.deleteVideo(id));
+    public ResponseEntity<Void> deleteVideo(@PathVariable Long id) {
+        videoService.deleteVideo(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<VideoDTO> updateVideo(@PathVariable Long id, @RequestBody VideoDTO videoDTO) {
-        return ResponseEntity.ok(videoService.updateVideo(id, videoDTO));
+        videoService.updateVideo(id, videoDTO);
+        return ResponseEntity.ok().body(videoDTO);
     }
 }

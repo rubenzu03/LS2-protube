@@ -2,7 +2,6 @@ package com.tecnocampus.LS2.protube_back.controller;
 
 import com.tecnocampus.LS2.protube_back.persistence.dto.CommentDTO;
 import com.tecnocampus.LS2.protube_back.services.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,8 +11,11 @@ import java.util.List;
 @RequestMapping("/api/comments")
 public class CommentController {
 
-    @Autowired
     CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @GetMapping()
     public ResponseEntity<List<CommentDTO>> getComments() {
@@ -27,12 +29,14 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO) {
-        return ResponseEntity.created(commentService.createComment(commentDTO)).body(commentDTO);
+        CommentDTO created = commentService.createComment(commentDTO);
+        return ResponseEntity.ok(created);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<CommentDTO> deleteComment(@PathVariable Long id) {
-        return ResponseEntity.ok(commentService.deleteComment(id));
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
+        commentService.deleteComment(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
