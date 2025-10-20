@@ -13,53 +13,38 @@ import java.util.List;
 @Service
 public class CategoryService {
 
-    public final CategoryRepository CategoryRepository;
+    public final CategoryRepository categoryRepository;
 
-    public CategoryService(CategoryRepository CategoryRepository) {
-        this.CategoryRepository = CategoryRepository;
+    @Autowired
+    public CategoryService(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
     public List<CategoryDTO> getCategories() {
-        return CategoryRepository.findAll().stream().map(this::toDTO).toList();
+        return categoryRepository.findAll()
+                .stream()
+                .map(c -> new CategoryDTO(c.getId(), c.getName()))
+                .toList();
     }
 
     public CategoryDTO getCategoryById(Long id) {
-        return CategoryRepository.findById(id).map(this::toDTO).orElse(null);
+        return categoryRepository.findById(id)
+                .map(c -> new CategoryDTO(c.getId(), c.getName()))
+                .orElse(null);
     }
 
-    public URI createCategory(CategoryDTO categoryDTO) {
-        Category category = toEntity(categoryDTO);
-        CategoryRepository.save(category);
-        return ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(category.getId())
-                .toUri();
+    public void createCategory(CategoryDTO category) {
+        categoryRepository.save(new Category(category));
     }
 
-    public CategoryDTO deleteCategory(Long id) {
-        CategoryDTO categoryDTO = getCategoryById(id);
-        CategoryRepository.deleteById(id);
-        return categoryDTO;
+    public void deleteCategory(Long id) {
+        categoryRepository.deleteById(id);
     }
 
-    public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
-        Category category = toEntity(categoryDTO);
-        category.setId(id);
-        CategoryRepository.save(category);
-        return toDTO(category);
-    }
-
-    private CategoryDTO toDTO(Category category) {
-        return new CategoryDTO(
-                category.getId(),
-                category.getName()
-        );
-    }
-
-    private Category toEntity(CategoryDTO categoryDTO) {
-        Category category = new Category();
-        category.setId(categoryDTO.id());
-        category.setName(categoryDTO.name());
-        return category;
+    public void updateCategory(Long id, CategoryDTO newCategory) {
+        Category category = categoryRepository.findById(id).orElse(null);
+        if (category == null) return;
+        category.updateCategory(newCategory);
+        categoryRepository.save(category);
     }
 }

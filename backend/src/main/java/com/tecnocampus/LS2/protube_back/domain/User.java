@@ -15,4 +15,19 @@ public class User {
     @Id
     private Long id;
     private String username;
+    @OneToMany(mappedBy = "user")
+    private List<Video> videos;
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments;
+
+    public User() {}
+
+    public User(Long id, String username) {
+        this.id = id;
+        this.username = username;
+    }
+
+    public void updateUser(String username) {
+        this.username = username;
+    }
 }

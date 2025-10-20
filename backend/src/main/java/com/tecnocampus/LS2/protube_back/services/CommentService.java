@@ -2,6 +2,8 @@ package com.tecnocampus.LS2.protube_back.services;
 
 import com.tecnocampus.LS2.protube_back.domain.Comment;
 import com.tecnocampus.LS2.protube_back.persistence.CommentRepository;
+import com.tecnocampus.LS2.protube_back.persistence.UserRepository;
+import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.CommentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,26 +16,53 @@ import java.util.List;
 public class CommentService {
 
     public final CommentRepository commentRepository;
+    public final UserRepository userRepository;
+    public final VideoRepository videoRepository;
 
-    public CommentService(CommentRepository commentRepository) {
+    @Autowired
+    public CommentService(CommentRepository commentRepository, UserRepository userRepository, VideoRepository videoRepository) {
         this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
+        this.videoRepository = videoRepository;
     }
 
     public List<CommentDTO> getComments() {
-        return commentRepository.findAll().stream().map(this::toDTO).toList();
+        return commentRepository.findAll().stream()
+                .map(comment -> new CommentDTO(
+                        comment.getId(),
+                        comment.getContent(),
+                        comment.getUser() != null ? comment.getUser().getId() : null,
+                        comment.getVideo() != null ? comment.getVideo().getId() : null
+                ))
+                .toList();
     }
 
     public CommentDTO getCommentById(Long id) {
-        return commentRepository.findById(id).map(this::toDTO).orElse(null);
+        return commentRepository.findById(id)
+                .map(comment -> new CommentDTO(
+                        comment.getId(),
+                        comment.getContent(),
+                        comment.getUser() != null ? comment.getUser().getId() : null,
+                        comment.getVideo() != null ? comment.getVideo().getId() : null
+                ))
+                .orElse(null);
     }
 
-    public URI createComment(CommentDTO commentDTO) {
-        Comment comment = toEntity(commentDTO);
-        commentRepository.save(comment);
-        return ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(comment.getId())
-                .toUri();
+    public CommentDTO createComment(CommentDTO dto) {
+        Comment comment = new Comment(dto);
+        if (dto.userId() != null) {
+            comment.setUser(userRepository.getReferenceById(dto.userId()));
+        }
+        if (dto.videoId() != null) {
+            comment.setVideo(videoRepository.getReferenceById(dto.videoId()));
+        }
+        Comment saved = commentRepository.save(comment);
+        return new CommentDTO(
+                saved.getId(),
+                saved.getContent(),
+                saved.getUser() != null ? saved.getUser().getId() : null,
+                saved.getVideo() != null ? saved.getVideo().getId() : null
+        );
     }
 
     public CommentDTO deleteComment(Long id) {
@@ -42,26 +71,21 @@ public class CommentService {
         return commentDTO;
     }
 
-    public CommentDTO updateComment(Long id, CommentDTO commentDTO) {
-        Comment comment = toEntity(commentDTO);
+    public CommentDTO updateComment(Long id, CommentDTO dto) {
+        Comment comment = new Comment(dto);
         comment.setId(id);
-        commentRepository.save(comment);
-        return toDTO(comment);
-    }
-
-    private CommentDTO toDTO(Comment comment) {
+        if (dto.userId() != null) {
+            comment.setUser(userRepository.getReferenceById(dto.userId()));
+        }
+        if (dto.videoId() != null) {
+            comment.setVideo(videoRepository.getReferenceById(dto.videoId()));
+        }
+        Comment saved = commentRepository.save(comment);
         return new CommentDTO(
-                comment.getId(),
-                comment.getContent(),
-                comment.getUser() != null ? comment.getUser().getId() : null,
-                comment.getVideo() != null ? comment.getVideo().getId() : null
+                saved.getId(),
+                saved.getContent(),
+                saved.getUser() != null ? saved.getUser().getId() : null,
+                saved.getVideo() != null ? saved.getVideo().getId() : null
         );
-    }
-
-    private Comment toEntity(CommentDTO commentDTO) {
-        Comment comment = new Comment();
-        comment.setId(commentDTO.id());
-        comment.setContent(commentDTO.content());
-        return comment;
     }
 }

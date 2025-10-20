@@ -2,7 +2,6 @@ package com.tecnocampus.LS2.protube_back.controller;
 
 import com.tecnocampus.LS2.protube_back.persistence.dto.UserDTO;
 import com.tecnocampus.LS2.protube_back.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,8 +11,11 @@ import java.util.List;
 @RequestMapping("/api/user")
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("")
     public ResponseEntity<List<UserDTO>> getCategories() {
@@ -27,12 +29,14 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        return ResponseEntity.created(userService.createUser(userDTO)).body(userDTO);
+        UserDTO created = userService.createUser(userDTO);
+        return ResponseEntity.ok(created);
     }
 
     @DeleteMapping ("/{id}")
-    public ResponseEntity<UserDTO> deleteUser(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.deleteUser(id));
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")

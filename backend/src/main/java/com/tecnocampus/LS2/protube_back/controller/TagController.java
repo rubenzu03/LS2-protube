@@ -2,7 +2,6 @@ package com.tecnocampus.LS2.protube_back.controller;
 
 import com.tecnocampus.LS2.protube_back.persistence.dto.TagDto;
 import com.tecnocampus.LS2.protube_back.services.TagService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,8 +11,11 @@ import java.util.List;
 @RequestMapping("/api/tags")
 public class TagController {
 
-    @Autowired
     TagService tagService;
+
+    public TagController(TagService tagService) {
+        this.tagService = tagService;
+    }
 
     @GetMapping()
     public ResponseEntity<List<TagDto>> getTags() {
@@ -27,12 +29,14 @@ public class TagController {
 
     @PostMapping
     public ResponseEntity<TagDto> createTag(@RequestBody TagDto tagDto) {
-        return ResponseEntity.created(tagService.createTag(tagDto)).body(tagDto);
+        TagDto created = tagService.createTag(tagDto);
+        return ResponseEntity.ok(created);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<TagDto> deleteTag(@PathVariable Long id) {
-        return ResponseEntity.ok(tagService.deleteTag(id));
+    public ResponseEntity<Void> deleteTag(@PathVariable Long id) {
+        tagService.deleteTag(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
@@ -40,4 +44,3 @@ public class TagController {
         return ResponseEntity.ok(tagService.updateTag(id, tagDto));
     }
 }
-

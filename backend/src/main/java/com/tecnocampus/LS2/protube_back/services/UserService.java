@@ -4,7 +4,6 @@ import com.tecnocampus.LS2.protube_back.domain.User;
 import com.tecnocampus.LS2.protube_back.domain.Video;
 import com.tecnocampus.LS2.protube_back.persistence.UserRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.UserDTO;
-import com.tecnocampus.LS2.protube_back.persistence.dto.VideoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -18,52 +17,41 @@ public class UserService {
 
     public final UserRepository userRepository;
 
+    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     public List<UserDTO> getUsers() {
         return userRepository.findAll().stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+                .map(user -> new UserDTO(user.getId(), user.getUsername(), null, null))
+                .toList();
     }
 
     public UserDTO getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(this::toDTO)
-                .orElse(null);
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) return null;
+        return new UserDTO(user.getId(), user.getUsername(), null, null);
     }
 
-    public URI createUser(UserDTO userDTO) {
-        User user = toEntity(userDTO);
-        userRepository.save(user);
-        return ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(user.getId())
-                .toUri();
+    public UserDTO createUser(UserDTO userDTO) {
+        User user = new User(userDTO.id(), userDTO.username());
+        User saved = userRepository.save(user);
+        return new UserDTO(saved.getId(), saved.getUsername(), null, null);
     }
 
     public UserDTO deleteUser(Long id) {
-        UserDTO userDTO = getUserById(id);
-        userRepository.deleteById(id);
-        return userDTO;
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            userRepository.deleteById(id);
+            return new UserDTO(user.getId(), user.getUsername(), null, null);
+        }
+        return null;
     }
 
     public UserDTO updateUser(Long id, UserDTO userDTO) {
-        User user = toEntity(userDTO);
-        user.setId(id);
-        userRepository.save(user);
-        return toDTO(user);
-    }
-
-    private UserDTO toDTO(User user) {
-        return new UserDTO(user.getId(), user.getUsername());
-    }
-
-    private User toEntity(UserDTO userDTO) {
-        User user = new User();
-        user.setId(userDTO.id());
-        user.setUsername(userDTO.username());
-        return user;
+        User user = new User(id, userDTO.username());
+        User updated = userRepository.save(user);
+        return new UserDTO(updated.getId(), updated.getUsername(), null, null);
     }
 }

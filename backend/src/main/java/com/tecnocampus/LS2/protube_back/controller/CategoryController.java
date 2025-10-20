@@ -2,7 +2,6 @@ package com.tecnocampus.LS2.protube_back.controller;
 
 import com.tecnocampus.LS2.protube_back.persistence.dto.CategoryDTO;
 import com.tecnocampus.LS2.protube_back.services.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,8 +11,11 @@ import java.util.List;
 @RequestMapping("/api/category")
 public class CategoryController {
 
-    @Autowired
     CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @GetMapping()
     public ResponseEntity<List<CategoryDTO>> getCategories() {
@@ -27,16 +29,19 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
-        return ResponseEntity.created(categoryService.createCategory(categoryDTO)).body(categoryDTO);
+        categoryService.createCategory(categoryDTO);
+        return ResponseEntity.status(201).body(categoryDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable Long id) {
-        return ResponseEntity.ok(categoryService.deleteCategory(id));
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
-        return ResponseEntity.ok(categoryService.updateCategory(id, categoryDTO));
+        categoryService.updateCategory(id, categoryDTO);
+        return ResponseEntity.ok(categoryDTO);
     }
 }
