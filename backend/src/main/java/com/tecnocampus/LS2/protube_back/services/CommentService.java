@@ -1,6 +1,8 @@
 package com.tecnocampus.LS2.protube_back.services;
 
 import com.tecnocampus.LS2.protube_back.domain.Comment;
+import com.tecnocampus.LS2.protube_back.domain.User;
+import com.tecnocampus.LS2.protube_back.domain.Video;
 import com.tecnocampus.LS2.protube_back.persistence.CommentRepository;
 import com.tecnocampus.LS2.protube_back.persistence.UserRepository;
 import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
@@ -38,14 +40,7 @@ public class CommentService {
 
     public CommentDTO createComment(CommentDTO dto) {
         Comment comment = toDomain(dto);
-        if (dto.userId() != null) {
-            comment.setUser(userRepository.getReferenceById(dto.userId()));
-        }
-        if (dto.videoId() != null) {
-            comment.setVideo(videoRepository.getReferenceById(dto.videoId()));
-        }
-        Comment saved = commentRepository.save(comment);
-        return toDTO(saved);
+        return getCommentDTO(dto, comment);
     }
 
     public CommentDTO deleteComment(Long id) {
@@ -60,16 +55,27 @@ public class CommentService {
         Comment comment = commentRepository.findById(id).orElse(null);
         if (comment != null) {
             comment.setContent(dto.content());
-            if (dto.userId() != null) {
-                comment.setUser(userRepository.getReferenceById(dto.userId()));
+            User userComment = userRepository.findById(dto.userId()).orElse(null);
+            Video videoComment = videoRepository.findById(dto.videoId()).orElse(null);
+            if (userComment != null && videoComment != null) {
+                comment.setUser(userComment);
+                comment.setVideo(videoComment);
             }
-            if (dto.videoId() != null) {
-                comment.setVideo(videoRepository.getReferenceById(dto.videoId()));
-            }
-            Comment updated = commentRepository.save(comment);
-            return toDTO(updated);
+            commentRepository.save(comment);
+            return getCommentDTO(dto, comment);
         }
         return null;
+    }
+
+    private CommentDTO getCommentDTO(CommentDTO dto, Comment comment) {
+        if (dto.userId() != null) {
+            comment.setUser(userRepository.getReferenceById(dto.userId()));
+        }
+        if (dto.videoId() != null) {
+            comment.setVideo(videoRepository.getReferenceById(dto.videoId()));
+        }
+        Comment updated = commentRepository.save(comment);
+        return toDTO(updated);
     }
 
     private CommentDTO toDTO(Comment comment) {

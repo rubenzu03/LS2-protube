@@ -11,7 +11,7 @@ public record VideoDTO(
         String description,
         Long userId,
         Long categoryId,
-        List<String> tags,
+        Long tag,
         Long commentId
 ) {
 }
