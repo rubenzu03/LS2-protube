@@ -1,7 +1,5 @@
 package com.tecnocampus.LS2.protube_back.persistence.dto;
 
-import java.util.List;
-
 public record VideoDTO(
         Long id,
         String title,
@@ -11,7 +9,7 @@ public record VideoDTO(
         String description,
         Long userId,
         Long categoryId,
-        Long tag,
+        Long tagId,
         Long commentId
 ) {
 }
