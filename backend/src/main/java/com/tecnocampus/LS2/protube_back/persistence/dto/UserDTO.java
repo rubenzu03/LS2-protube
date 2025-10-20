@@ -4,6 +4,6 @@ public record UserDTO(
         Long id,
         String username,
         Long videoId,
-        Long userId
+        Long commentId
 ) {
 }

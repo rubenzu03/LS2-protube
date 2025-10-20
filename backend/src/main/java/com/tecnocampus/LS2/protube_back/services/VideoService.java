@@ -1,8 +1,7 @@
 package com.tecnocampus.LS2.protube_back.services;
 
-import com.tecnocampus.LS2.protube_back.domain.Tag;
-import com.tecnocampus.LS2.protube_back.domain.Video;
-import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
+import com.tecnocampus.LS2.protube_back.domain.*;
+import com.tecnocampus.LS2.protube_back.persistence.*;
 import com.tecnocampus.LS2.protube_back.persistence.dto.VideoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +14,18 @@ import java.util.stream.Collectors;
 public class VideoService {
 
     public final VideoRepository videoRepository;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
+    private final TagRepository tagRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
-    public VideoService(VideoRepository videoRepository) {
+    public VideoService(VideoRepository videoRepository, UserRepository userRepository, CategoryRepository categoryRepository, TagRepository tagRepository, CommentRepository commentRepository) {
         this.videoRepository = videoRepository;
+        this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
+        this.tagRepository = tagRepository;
+        this.commentRepository = commentRepository;
     }
 
     public List<VideoDTO> getVideos() {
@@ -54,6 +61,19 @@ public class VideoService {
         Video video = videoRepository.findById(id).orElse(null);
         if (video != null) {
             video.updateVideo(videoDTO);
+            User user = userRepository.findById(videoDTO.userId()).orElse(null);
+            Category category = categoryRepository.findById(videoDTO.categoryId()).orElse(null);
+            Tag tag = tagRepository.findById(videoDTO.tagId()).orElse(null);
+            Comment comment = commentRepository.findById(videoDTO.commentId()).orElse(null);
+
+            if (user != null && category != null && tag != null && comment != null) {
+                video.getCategories().add(category);
+                video.getTags().add(tag);
+                video.getComments().add(comment);
+                video.setUser(user);
+
+            }
+
             Video updated = videoRepository.save(video);
             return toDTO(updated);
         }
@@ -72,9 +92,9 @@ public class VideoService {
                 (video.getCategories() != null && !video.getCategories().isEmpty())
                         ? video.getCategories().get(0).getId()
                         : null,
-                (video.getTags() != null)
-                        ? video.getTags().stream().map(Tag::getName).collect(Collectors.toList())
-                        : Collections.emptyList(),
+                (video.getTags() != null && !video.getTags().isEmpty())
+                        ? video.getTags().get(0).getId()
+                        : null,
                 (video.getComments() != null && !video.getComments().isEmpty())
                         ? video.getComments().get(0).getId()
                         : null

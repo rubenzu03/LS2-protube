@@ -1,7 +1,11 @@
 package com.tecnocampus.LS2.protube_back.services;
 
+import com.tecnocampus.LS2.protube_back.domain.Comment;
 import com.tecnocampus.LS2.protube_back.domain.User;
+import com.tecnocampus.LS2.protube_back.domain.Video;
+import com.tecnocampus.LS2.protube_back.persistence.CommentRepository;
 import com.tecnocampus.LS2.protube_back.persistence.UserRepository;
+import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +16,14 @@ import java.util.List;
 public class UserService {
 
     public final UserRepository userRepository;
+    public final VideoRepository videoRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, VideoRepository videoRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
+        this.videoRepository = videoRepository;
+        this.commentRepository = commentRepository;
     }
 
     public List<UserDTO> getUsers() {
@@ -49,6 +57,14 @@ public class UserService {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
             user.updateUser(userDTO.username());
+            Video video = videoRepository.findById(userDTO.videoId()).orElse(null);
+            Comment comment = commentRepository.findById(userDTO.commentId()).orElse(null);
+
+            if (video != null && comment != null) {
+                user.getVideos().add(video);
+                user.getComments().add(comment);
+            }
+
             User updated = userRepository.save(user);
             return toDTO(updated);
         }

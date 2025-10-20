@@ -26,4 +26,12 @@ public class Comment {
     public Comment(CommentDTO commentDto) {
         this.content = commentDto.content();
     }
+
+    public void updateComment(CommentDTO commentDto) {
+        this.content = commentDto.content();
+    }
+
+    public void updateUser(User user) {
+        this.user = user;
+    }
 }
