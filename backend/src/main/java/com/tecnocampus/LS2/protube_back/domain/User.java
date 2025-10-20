@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.domain;
 
+import com.tecnocampus.LS2.protube_back.persistence.dto.UserDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -25,6 +26,11 @@ public class User {
     public User(Long id, String username) {
         this.id = id;
         this.username = username;
+    }
+
+    public User(UserDTO userDTO) {
+        this.id = userDTO.id();
+        this.username = userDTO.username();
     }
 
     public void updateUser(String username) {

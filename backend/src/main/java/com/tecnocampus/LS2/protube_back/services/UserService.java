@@ -60,6 +60,6 @@ public class UserService {
     }
 
     private User toDomain(UserDTO userDTO) {
-        return new User(userDTO.id(), userDTO.username());
+        return new User(userDTO);
     }
 }

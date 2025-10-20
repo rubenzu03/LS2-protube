@@ -20,7 +20,6 @@ public class Tag {
     public Tag() {}
 
     public Tag(TagDto tagDto) {
-        this.id = tagDto.id();
         this.name = tagDto.name();
     }
 
