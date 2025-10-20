@@ -6,7 +6,6 @@ import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.VideoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,76 +21,43 @@ public class VideoService {
         this.videoRepository = videoRepository;
     }
 
-    //TODO: Check sketchy method, probably there is an easier way to do it
     public List<VideoDTO> getVideos() {
         return videoRepository.findAll()
                 .stream()
-                .map(v -> new VideoDTO(
-                        v.getId(),
-                        v.getTitle(),
-                        v.getWidth(),
-                        v.getHeight(),
-                        v.getDuration(),
-                        v.getDescription(),
-                        v.getUser() != null ? v.getUser().getId() : null,
-                        (v.getCategories() != null && !v.getCategories().isEmpty())
-                                ? v.getCategories().getFirst().getId()
-                                : null,
-                        (v.getTags() != null)
-                                ? v.getTags().stream().map(Tag::getName).collect(Collectors.toList())
-                                : Collections.emptyList(),
-                        (v.getComments() != null && !v.getComments().isEmpty())
-                                ? v.getComments().getFirst().getId()
-                                : null
-                ))
+                .map(this::toDTO)
                 .toList();
     }
 
     public VideoDTO getVideoById(Long id) {
-        Video v = videoRepository.findById(id).orElse(null);
-        if (v == null) {
+        Video video = videoRepository.findById(id).orElse(null);
+        if (video == null) {
             return null;
         }
-        return new VideoDTO(
-                v.getId(),
-                v.getTitle(),
-                v.getWidth(),
-                v.getHeight(),
-                v.getDuration(),
-                v.getDescription(),
-                v.getUser() != null ? v.getUser().getId() : null,
-                (v.getCategories() != null && !v.getCategories().isEmpty())
-                        ? v.getCategories().getFirst().getId()
-                        : null,
-                (v.getTags() != null)
-                        ? v.getTags().stream().map(Tag::getName).collect(Collectors.toList())
-                        : Collections.emptyList(),
-                (v.getComments() != null && !v.getComments().isEmpty())
-                        ? v.getComments().getFirst().getId()
-                        : null
-        );
+        return toDTO(video);
     }
 
-    public void createVideo(VideoDTO videoDTO) {
-        Video video = new Video(videoDTO);
-        videoRepository.save(video);
-        return ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(video.getId())
-                .toUri();
+    public VideoDTO createVideo(VideoDTO videoDTO) {
+        Video video = toDomain(videoDTO);
+        Video saved = videoRepository.save(video);
+        return toDTO(saved);
     }
 
     public VideoDTO deleteVideo(Long id) {
         VideoDTO videoDTO = getVideoById(id);
-        videoRepository.deleteById(id);
+        if (videoDTO != null) {
+            videoRepository.deleteById(id);
+        }
         return videoDTO;
     }
 
     public VideoDTO updateVideo(Long id, VideoDTO videoDTO) {
-        Video video = toEntity(videoDTO);
-        video.setId(id);
-        videoRepository.save(video);
-        return toDTO(video);
+        Video video = videoRepository.findById(id).orElse(null);
+        if (video != null) {
+            video.updateVideo(videoDTO);
+            Video updated = videoRepository.save(video);
+            return toDTO(updated);
+        }
+        return null;
     }
 
     private VideoDTO toDTO(Video video) {
@@ -103,17 +69,20 @@ public class VideoService {
                 video.getDuration(),
                 video.getDescription(),
                 video.getUser() != null ? video.getUser().getId() : null,
-                video.getCategories() != null && !video.getCategories().isEmpty() ? video.getCategories().get(0).getId() : null,
-                video.getTags() != null ? video.getTags().stream().map(tag -> tag.getName()).toList() : null,
-                video.getComments() != null && !video.getComments().isEmpty() ? video.getComments().get(0).getId() : null
+                (video.getCategories() != null && !video.getCategories().isEmpty())
+                        ? video.getCategories().get(0).getId()
+                        : null,
+                (video.getTags() != null)
+                        ? video.getTags().stream().map(Tag::getName).collect(Collectors.toList())
+                        : Collections.emptyList(),
+                (video.getComments() != null && !video.getComments().isEmpty())
+                        ? video.getComments().get(0).getId()
+                        : null
         );
     }
 
-    public void updateVideo(Long id, VideoDTO videoDTO) {
-        Video video = videoRepository.findById(id).orElse(null);
-        if (video != null) {
-            video.updateVideo(videoDTO);
-            videoRepository.save(video);
-        }
+    private Video toDomain(VideoDTO videoDTO) {
+        Video video = new Video(videoDTO);
+        return video;
     }
 }

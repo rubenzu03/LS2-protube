@@ -30,7 +30,7 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO) {
         CommentDTO created = commentService.createComment(commentDTO);
-        return ResponseEntity.ok(created);
+        return ResponseEntity.status(201).body(created);
     }
 
     @DeleteMapping("/{id}")

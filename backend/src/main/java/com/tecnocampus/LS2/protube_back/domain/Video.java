@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.util.List;
 
-
 @Entity (name = "videos")
 @Getter
 @Setter

@@ -5,9 +5,7 @@ import com.tecnocampus.LS2.protube_back.persistence.CategoryRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.CategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 @Service
@@ -23,28 +21,45 @@ public class CategoryService {
     public List<CategoryDTO> getCategories() {
         return categoryRepository.findAll()
                 .stream()
-                .map(c -> new CategoryDTO(c.getId(), c.getName()))
+                .map(this::toDTO)
                 .toList();
     }
 
     public CategoryDTO getCategoryById(Long id) {
         return categoryRepository.findById(id)
-                .map(c -> new CategoryDTO(c.getId(), c.getName()))
+                .map(this::toDTO)
                 .orElse(null);
     }
 
-    public void createCategory(CategoryDTO category) {
-        categoryRepository.save(new Category(category));
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+        Category category = toDomain(categoryDTO);
+        Category saved = categoryRepository.save(category);
+        return toDTO(saved);
     }
 
-    public void deleteCategory(Long id) {
-        categoryRepository.deleteById(id);
+    public CategoryDTO deleteCategory(Long id) {
+        CategoryDTO categoryDTO = getCategoryById(id);
+        if (categoryDTO != null) {
+            categoryRepository.deleteById(id);
+        }
+        return categoryDTO;
     }
 
-    public void updateCategory(Long id, CategoryDTO newCategory) {
+    public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
         Category category = categoryRepository.findById(id).orElse(null);
-        if (category == null) return;
-        category.updateCategory(newCategory);
-        categoryRepository.save(category);
+        if (category != null) {
+            category.updateCategory(categoryDTO);
+            Category updated = categoryRepository.save(category);
+            return toDTO(updated);
+        }
+        return null;
+    }
+
+    private CategoryDTO toDTO(Category category) {
+        return new CategoryDTO(category.getId(), category.getName());
+    }
+
+    private Category toDomain(CategoryDTO categoryDTO) {
+        return new Category(categoryDTO);
     }
 }

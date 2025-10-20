@@ -28,7 +28,7 @@ public class VideoController {
     @PostMapping
     public ResponseEntity<VideoDTO> createVideo(@RequestBody VideoDTO videoDTO) {
         videoService.createVideo(videoDTO);
-        return ResponseEntity.ok().body(videoDTO);
+        return ResponseEntity.status(201).body(videoDTO);
     }
 
     @DeleteMapping("/{id}")

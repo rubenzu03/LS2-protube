@@ -7,9 +7,7 @@ import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.CommentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 @Service
@@ -28,28 +26,18 @@ public class CommentService {
 
     public List<CommentDTO> getComments() {
         return commentRepository.findAll().stream()
-                .map(comment -> new CommentDTO(
-                        comment.getId(),
-                        comment.getContent(),
-                        comment.getUser() != null ? comment.getUser().getId() : null,
-                        comment.getVideo() != null ? comment.getVideo().getId() : null
-                ))
+                .map(this::toDTO)
                 .toList();
     }
 
     public CommentDTO getCommentById(Long id) {
         return commentRepository.findById(id)
-                .map(comment -> new CommentDTO(
-                        comment.getId(),
-                        comment.getContent(),
-                        comment.getUser() != null ? comment.getUser().getId() : null,
-                        comment.getVideo() != null ? comment.getVideo().getId() : null
-                ))
+                .map(this::toDTO)
                 .orElse(null);
     }
 
     public CommentDTO createComment(CommentDTO dto) {
-        Comment comment = new Comment(dto);
+        Comment comment = toDomain(dto);
         if (dto.userId() != null) {
             comment.setUser(userRepository.getReferenceById(dto.userId()));
         }
@@ -57,35 +45,43 @@ public class CommentService {
             comment.setVideo(videoRepository.getReferenceById(dto.videoId()));
         }
         Comment saved = commentRepository.save(comment);
-        return new CommentDTO(
-                saved.getId(),
-                saved.getContent(),
-                saved.getUser() != null ? saved.getUser().getId() : null,
-                saved.getVideo() != null ? saved.getVideo().getId() : null
-        );
+        return toDTO(saved);
     }
 
     public CommentDTO deleteComment(Long id) {
         CommentDTO commentDTO = getCommentById(id);
-        commentRepository.deleteById(id);
+        if (commentDTO != null) {
+            commentRepository.deleteById(id);
+        }
         return commentDTO;
     }
 
     public CommentDTO updateComment(Long id, CommentDTO dto) {
-        Comment comment = new Comment(dto);
-        comment.setId(id);
-        if (dto.userId() != null) {
-            comment.setUser(userRepository.getReferenceById(dto.userId()));
+        Comment comment = commentRepository.findById(id).orElse(null);
+        if (comment != null) {
+            comment.setContent(dto.content());
+            if (dto.userId() != null) {
+                comment.setUser(userRepository.getReferenceById(dto.userId()));
+            }
+            if (dto.videoId() != null) {
+                comment.setVideo(videoRepository.getReferenceById(dto.videoId()));
+            }
+            Comment updated = commentRepository.save(comment);
+            return toDTO(updated);
         }
-        if (dto.videoId() != null) {
-            comment.setVideo(videoRepository.getReferenceById(dto.videoId()));
-        }
-        Comment saved = commentRepository.save(comment);
+        return null;
+    }
+
+    private CommentDTO toDTO(Comment comment) {
         return new CommentDTO(
-                saved.getId(),
-                saved.getContent(),
-                saved.getUser() != null ? saved.getUser().getId() : null,
-                saved.getVideo() != null ? saved.getVideo().getId() : null
+                comment.getId(),
+                comment.getContent(),
+                comment.getUser() != null ? comment.getUser().getId() : null,
+                comment.getVideo() != null ? comment.getVideo().getId() : null
         );
+    }
+
+    private Comment toDomain(CommentDTO commentDTO) {
+        return new Comment(commentDTO);
     }
 }

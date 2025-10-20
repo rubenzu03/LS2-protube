@@ -30,7 +30,7 @@ public class TagController {
     @PostMapping
     public ResponseEntity<TagDto> createTag(@RequestBody TagDto tagDto) {
         TagDto created = tagService.createTag(tagDto);
-        return ResponseEntity.ok(created);
+        return ResponseEntity.status(201).body(created);
     }
 
     @DeleteMapping("/{id}")

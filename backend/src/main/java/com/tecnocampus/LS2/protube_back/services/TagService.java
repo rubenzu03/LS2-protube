@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TagService {
@@ -21,30 +20,45 @@ public class TagService {
 
     public List<TagDto> getTags() {
         return tagRepository.findAll().stream()
-                .map(tag -> new TagDto(tag.getId(), tag.getName()))
-                .collect(Collectors.toList());
+                .map(this::toDTO)
+                .toList();
     }
 
     public TagDto getTagById(Long id) {
         return tagRepository.findById(id)
-                .map(tag -> new TagDto(tag.getId(), tag.getName()))
+                .map(this::toDTO)
                 .orElse(null);
     }
 
     public TagDto createTag(TagDto tagDto) {
-        Tag tag = new Tag(tagDto);
+        Tag tag = toDomain(tagDto);
         Tag saved = tagRepository.save(tag);
-        return new TagDto(saved.getId(), saved.getName());
+        return toDTO(saved);
     }
 
-    public void deleteTag(Long id) {
-        tagRepository.deleteById(id);
+    public TagDto deleteTag(Long id) {
+        TagDto tagDto = getTagById(id);
+        if (tagDto != null) {
+            tagRepository.deleteById(id);
+        }
+        return tagDto;
     }
 
     public TagDto updateTag(Long id, TagDto tagDto) {
-        Tag tag = new Tag(tagDto);
-        tag.setId(id);
-        Tag saved = tagRepository.save(tag);
-        return new TagDto(saved.getId(), saved.getName());
+        Tag tag = tagRepository.findById(id).orElse(null);
+        if (tag != null) {
+            tag.setName(tagDto.name());
+            Tag updated = tagRepository.save(tag);
+            return toDTO(updated);
+        }
+        return null;
+    }
+
+    private TagDto toDTO(Tag tag) {
+        return new TagDto(tag.getId(), tag.getName());
+    }
+
+    private Tag toDomain(TagDto tagDto) {
+        return new Tag(tagDto);
     }
 }
