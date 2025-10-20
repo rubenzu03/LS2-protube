@@ -31,7 +31,6 @@ public class Video {
     public Video() {}
 
     public Video(VideoDTO videoDTO){
-        this.id = videoDTO.id();
         this.title = videoDTO.title();
         this.width = videoDTO.width();
         this.height = videoDTO.height();

@@ -24,7 +24,6 @@ public class Comment {
     }
 
     public Comment(CommentDTO commentDto) {
-        this.id = commentDto.id();
         this.content = commentDto.content();
     }
 }

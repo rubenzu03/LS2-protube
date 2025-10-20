@@ -29,7 +29,6 @@ public class User {
     }
 
     public User(UserDTO userDTO) {
-        this.id = userDTO.id();
         this.username = userDTO.username();
     }
 

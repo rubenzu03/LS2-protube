@@ -20,12 +20,10 @@ public class Category {
     public Category() {}
 
     public Category(CategoryDTO categoryDTO) {
-        this.id = categoryDTO.id();
         this.name = categoryDTO.name();
     }
 
     public void updateCategory(CategoryDTO categoryDTO) {
         this.name = categoryDTO.name();
     }
-
 }
