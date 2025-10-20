@@ -18,6 +18,7 @@ public class Video {
     private float height;
     private float duration;
     private String description;
+    private String videoUrl;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -36,6 +37,7 @@ public class Video {
         this.height = videoDTO.height();
         this.duration = videoDTO.duration();
         this.description = videoDTO.description();
+        this.videoUrl = videoDTO.videoUrl();
     }
 
     public void updateVideo(VideoDTO videoDTO){
@@ -44,7 +46,6 @@ public class Video {
         this.height = videoDTO.height();
         this.duration = videoDTO.duration();
         this.description = videoDTO.description();
+        this.videoUrl = videoDTO.videoUrl();
     }
 }
-
-
