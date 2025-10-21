@@ -37,5 +37,7 @@ public class MvcConfig implements WebMvcConfigurer {
                 .allowedOriginPatterns("*");
         registry.addMapping("/auth/**")
                 .allowedOriginPatterns("*");
+        registry.addMapping("/media/**")
+                .allowedOriginPatterns("*");
     }
 }

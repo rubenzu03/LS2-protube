@@ -88,6 +88,7 @@ public class VideoService {
                 video.getHeight(),
                 video.getDuration(),
                 video.getDescription(),
+                video.getFilename(),
                 video.getUser() != null ? video.getUser().getId() : null,
                 (video.getCategories() != null && !video.getCategories().isEmpty())
                         ? video.getCategories().get(0).getId()
