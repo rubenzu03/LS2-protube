@@ -72,10 +72,17 @@ public class UserService {
     }
 
     private UserDTO toDTO(User user) {
-        return new UserDTO(user.getId(), user.getUsername(), null, null);
+        return new UserDTO(user.getUsername(), user.getId(),  null, null, null, null);
     }
 
     private User toDomain(UserDTO userDTO) {
         return new User(userDTO);
+    }
+
+
+    public UserDTO getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) return null;
+        return toDTO(user);
     }
 }

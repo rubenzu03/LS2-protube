@@ -1,9 +1,7 @@
 package com.tecnocampus.LS2.protube_back.domain;
 
 import com.tecnocampus.LS2.protube_back.persistence.dto.UserDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,8 +12,10 @@ import java.util.List;
 @Setter
 public class User {
     @Id
-    private Long id;
     private String username;
+    private Long id;
+    private String authId;
+    private String password;
     @OneToMany(mappedBy = "user")
     private List<Video> videos;
     @OneToMany(mappedBy = "user")
@@ -23,9 +23,9 @@ public class User {
 
     public User() {}
 
-    public User(Long id, String username) {
-        this.id = id;
+    public User(String username, String authId) {
         this.username = username;
+        this.authId = authId;
     }
 
     public User(UserDTO userDTO) {
