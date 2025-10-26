@@ -42,6 +42,7 @@ function ContentApp() {
                   <source src={`${getEnv().API_BASE_URL}/videos/stream/${video.id}`} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
+                  <p> ${getEnv().API_BASE_URL}/videos/stream/{video.id} </p>
                 <p>Duration: {Math.floor(video.duration / 60)}:{Math.floor(video.duration % 60).toString().padStart(2, '0')}</p>
               </div>
             ))}

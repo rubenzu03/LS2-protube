@@ -60,6 +60,7 @@ public class VideoController {
         }
 
         File videoFile = new File(storeDir, video.filename());
+        System.out.println(videoFile.getAbsolutePath());
         if (!videoFile.exists()) {
             return ResponseEntity.notFound().build();
         }
