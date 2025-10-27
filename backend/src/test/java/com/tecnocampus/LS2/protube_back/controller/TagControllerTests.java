@@ -1,8 +1,8 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tecnocampus.LS2.protube_back.persistence.dto.UserDTO;
-import com.tecnocampus.LS2.protube_back.services.UserService;
+import com.tecnocampus.LS2.protube_back.persistence.dto.TagDto;
+import com.tecnocampus.LS2.protube_back.services.TagService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
-public class UserControllerTests {
+@WebMvcTest(TagController.class)
+public class TagControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,64 +32,65 @@ public class UserControllerTests {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private UserService userService;
+    private TagService tagService;
 
     @Test
-    void getUsers_returnsList() throws Exception {
-        UserDTO u1 = new UserDTO(1L, "alice", null, null);
-        UserDTO u2 = new UserDTO(2L, "bob", null, null);
-        given(userService.getUsers()).willReturn(List.of(u1, u2));
+    void getTags_returnsList() throws Exception {
+        TagDto t1 = new TagDto(1L, "tagA");
+        TagDto t2 = new TagDto(2L, "tagB");
+        given(tagService.getTags()).willReturn(List.of(t1, t2));
 
-        mockMvc.perform(get("/api/user"))
+        mockMvc.perform(get("/api/tags"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].username").value("alice"));
+                .andExpect(jsonPath("$[0].name").value("tagA"));
     }
 
     @Test
-    void getUserById_returnsUser() throws Exception {
-        UserDTO u = new UserDTO(5L, "charlie", null, null);
-        when(userService.getUserById(5L)).thenReturn(u);
+    void getTagById_returnsTag() throws Exception {
+        TagDto t = new TagDto(5L, "special");
+        when(tagService.getTagById(5L)).thenReturn(t);
 
-        mockMvc.perform(get("/api/user/5"))
+        mockMvc.perform(get("/api/tags/5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(5))
-                .andExpect(jsonPath("$.username").value("charlie"));
+                .andExpect(jsonPath("$.name").value("special"));
     }
 
     @Test
-    void createUser_returnsCreatedWithBody() throws Exception {
-        UserDTO input = new UserDTO(null, "newuser", null, null);
-        UserDTO created = new UserDTO(10L, "newuser", null, null);
-        when(userService.createUser(any())).thenReturn(created);
+    void createTag_returnsCreatedWithBody() throws Exception {
+        TagDto input = new TagDto(null, "newtag");
+        TagDto created = new TagDto(10L, "newtag");
+        when(tagService.createTag(any())).thenReturn(created);
 
-        mockMvc.perform(post("/api/user")
+        mockMvc.perform(post("/api/tags")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(input)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(10))
-                .andExpect(jsonPath("$.username").value("newuser"));
+                .andExpect(jsonPath("$.name").value("newtag"));
     }
 
     @Test
-    void deleteUser_returnsNoContent() throws Exception {
-        given(userService.deleteUser(3L)).willReturn(new UserDTO(3L, "toDelete", null, null));
+    void deleteTag_returnsNoContent() throws Exception {
+        given(tagService.deleteTag(3L)).willReturn(new TagDto(3L, "toDelete"));
 
-        mockMvc.perform(delete("/api/user/3"))
+        mockMvc.perform(delete("/api/tags/3"))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    void updateUser_returnsUpdated() throws Exception {
-        UserDTO input = new UserDTO(null, "updated", null, null);
-        UserDTO updated = new UserDTO(4L, "updated", null, null);
-        when(userService.updateUser(eq(4L), any())).thenReturn(updated);
+    void updateTag_returnsUpdated() throws Exception {
+        TagDto input = new TagDto(null, "updated");
+        TagDto updated = new TagDto(4L, "updated");
+        when(tagService.updateTag(eq(4L), any())).thenReturn(updated);
 
-        mockMvc.perform(put("/api/user/4")
+        mockMvc.perform(put("/api/tags/4")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(input)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(4))
-                .andExpect(jsonPath("$.username").value("updated"));
+                .andExpect(jsonPath("$.name").value("updated"));
     }
 }
+
