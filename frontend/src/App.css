@@ -6,8 +6,8 @@
 
 :root[data-theme="dark"] {
   --primary-color: hsl(232, 80%, 58%);
-  --bg-primary: hsl(0, 0%, 4%);
-  --bg-secondary: hsl(0 0% 6%);
+  --bg-primary: hsl(0, 0%, 0%);
+  --bg-secondary: hsl(0 0% 4%);
   --bg-tertiary: hsl(0 0% 10%);
   --border-primary: hsl(0 0% 10%);
   --border-secondary: hsl(0 0% 15%);
