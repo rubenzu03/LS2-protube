@@ -11,4 +11,3 @@ export interface Video {
   tagId: number | null;
   commentId: number | null;
 }
-
