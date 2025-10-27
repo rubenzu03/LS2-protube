@@ -12,16 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface VideoRepository extends JpaRepository<Video, Long> {
-    @Override
-    Optional<Video> findById(Long id);
-
-    @Override
-    List<Video> findAll();
-
-    Video save(Video video);
-
-    void deleteById(Long id);
-
     @Modifying
     @Query("UPDATE videos v SET v.id = :newId WHERE v.id = :id")
     void updateId(Long id, Long newId);

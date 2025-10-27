@@ -1,69 +1,81 @@
 package com.tecnocampus.LS2.protube_back.services;
 
+import com.tecnocampus.LS2.protube_back.domain.Comment;
 import com.tecnocampus.LS2.protube_back.domain.User;
 import com.tecnocampus.LS2.protube_back.domain.Video;
+import com.tecnocampus.LS2.protube_back.persistence.CommentRepository;
 import com.tecnocampus.LS2.protube_back.persistence.UserRepository;
+import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.UserDTO;
-import com.tecnocampus.LS2.protube_back.persistence.dto.VideoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
-    @Autowired
-    public UserRepository userRepository;
+    public final UserRepository userRepository;
+    public final VideoRepository videoRepository;
+    private final CommentRepository commentRepository;
 
-    public UserService() {
+    @Autowired
+    public UserService(UserRepository userRepository, VideoRepository videoRepository, CommentRepository commentRepository) {
+        this.userRepository = userRepository;
+        this.videoRepository = videoRepository;
+        this.commentRepository = commentRepository;
     }
 
     public List<UserDTO> getUsers() {
         return userRepository.findAll().stream()
                 .map(this::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public UserDTO getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(this::toDTO)
-                .orElse(null);
-    }
-
-    public URI createUser(UserDTO userDTO) {
-        User user = toEntity(userDTO);
-        userRepository.save(user);
-        return ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(user.getId())
-                .toUri();
-    }
-
-    public UserDTO deleteUser(Long id) {
-        UserDTO userDTO = getUserById(id);
-        userRepository.deleteById(id);
-        return userDTO;
-    }
-
-    public UserDTO updateUser(Long id, UserDTO userDTO) {
-        User user = toEntity(userDTO);
-        user.setId(id);
-        userRepository.save(user);
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) return null;
         return toDTO(user);
     }
 
-    private UserDTO toDTO(User user) {
-        return new UserDTO(user.getId(), user.getUsername());
+    public UserDTO createUser(UserDTO userDTO) {
+        User user = toDomain(userDTO);
+        User saved = userRepository.save(user);
+        return toDTO(saved);
     }
 
-    private User toEntity(UserDTO userDTO) {
-        User user = new User();
-        user.setId(userDTO.id());
-        user.setUsername(userDTO.username());
-        return user;
+    public UserDTO deleteUser(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            userRepository.deleteById(id);
+            return toDTO(user);
+        }
+        return null;
+    }
+
+    public UserDTO updateUser(Long id, UserDTO userDTO) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            user.updateUser(userDTO.username());
+            Video video = videoRepository.findById(userDTO.videoId()).orElse(null);
+            Comment comment = commentRepository.findById(userDTO.commentId()).orElse(null);
+
+            if (video != null && comment != null) {
+                user.getVideos().add(video);
+                user.getComments().add(comment);
+            }
+
+            User updated = userRepository.save(user);
+            return toDTO(updated);
+        }
+        return null;
+    }
+
+    private UserDTO toDTO(User user) {
+        return new UserDTO(user.getId(), user.getUsername(), null, null);
+    }
+
+    private User toDomain(UserDTO userDTO) {
+        return new User(userDTO);
     }
 }

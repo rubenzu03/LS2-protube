@@ -5,61 +5,61 @@ import com.tecnocampus.LS2.protube_back.persistence.CategoryRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.CategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 @Service
 public class CategoryService {
 
-    @Autowired
-    public CategoryRepository CategoryRepository;
+    public final CategoryRepository categoryRepository;
 
-    public CategoryService() {
+    @Autowired
+    public CategoryService(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
     public List<CategoryDTO> getCategories() {
-        return CategoryRepository.findAll().stream().map(this::toDTO).toList();
+        return categoryRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     public CategoryDTO getCategoryById(Long id) {
-        return CategoryRepository.findById(id).map(this::toDTO).orElse(null);
+        return categoryRepository.findById(id)
+                .map(this::toDTO)
+                .orElse(null);
     }
 
-    public URI createCategory(CategoryDTO categoryDTO) {
-        Category category = toEntity(categoryDTO);
-        CategoryRepository.save(category);
-        return ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(category.getId())
-                .toUri();
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+        Category category = toDomain(categoryDTO);
+        Category saved = categoryRepository.save(category);
+        return toDTO(saved);
     }
 
     public CategoryDTO deleteCategory(Long id) {
         CategoryDTO categoryDTO = getCategoryById(id);
-        CategoryRepository.deleteById(id);
+        if (categoryDTO != null) {
+            categoryRepository.deleteById(id);
+        }
         return categoryDTO;
     }
 
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
-        Category category = toEntity(categoryDTO);
-        category.setId(id);
-        CategoryRepository.save(category);
-        return toDTO(category);
+        Category category = categoryRepository.findById(id).orElse(null);
+        if (category != null) {
+            category.updateCategory(categoryDTO);
+            Category updated = categoryRepository.save(category);
+            return toDTO(updated);
+        }
+        return null;
     }
 
     private CategoryDTO toDTO(Category category) {
-        return new CategoryDTO(
-                category.getId(),
-                category.getName()
-        );
+        return new CategoryDTO(category.getId(), category.getName());
     }
 
-    private Category toEntity(CategoryDTO categoryDTO) {
-        Category category = new Category();
-        category.setId(categoryDTO.id());
-        category.setName(categoryDTO.name());
-        return category;
+    private Category toDomain(CategoryDTO categoryDTO) {
+        return new Category(categoryDTO);
     }
 }
