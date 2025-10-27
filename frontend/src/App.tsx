@@ -1,5 +1,3 @@
-'use client';
-
 import './App.css';
 import { useAllVideos } from './useAllVideos';
 import { getEnv } from './utils/Env';
