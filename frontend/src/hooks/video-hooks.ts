@@ -2,15 +2,24 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { getEnv } from '../utils/env';
 import type { Video } from '@/types/videos';
+import type { Thumbnail } from '@/utils/api';
 
 type LoadingState = 'loading' | 'success' | 'error' | 'idle';
 
+type GetAllVideosResponse = {
+  videos: Video[];
+  thumbnails: Thumbnail[];
+};
+
 export function useAllVideos() {
   const { data, isLoading, isError, isSuccess, error } = useQuery({
-    queryKey: ['videos'],
-    queryFn: async (): Promise<Video[]> => {
-      const response = await axios.get<Video[]>(`${getEnv().API_BASE_URL}/videos`);
-      return response.data;
+    queryKey: ['videos&thumbnails'],
+    queryFn: async (): Promise<GetAllVideosResponse> => {
+      const [videosResponse, thumbnailsResponse] = await Promise.all([
+        axios.get<Video[]>(`${getEnv().API_BASE_URL}/videos`),
+        axios.get<Thumbnail[]>(`${getEnv().API_BASE_URL}/videos/thumbnails`)
+      ]);
+      return { videos: videosResponse.data, thumbnails: thumbnailsResponse.data };
     }
   });
 
@@ -23,7 +32,6 @@ export function useAllVideos() {
         : 'idle';
 
   const message = isError ? 'Error fetching videos: ' + error.message : isLoading ? 'Loading...' : '';
-  const value = (data as Video[]) ?? [];
 
-  return { value, message, loading };
+  return { videos: data?.videos ?? [], thumbnails: data?.thumbnails ?? [], message, loading };
 }

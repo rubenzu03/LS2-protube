@@ -1,19 +1,18 @@
 import type { Video } from '@/types/videos';
+import type { Thumbnail } from '@/utils/api';
+import { getThumbnail } from '@/utils/api';
 import { Link } from 'react-router';
 
 type Props = {
   video: Video;
-  src: string;
+  thumbnail: Thumbnail;
 };
 
-export function VideoCard({ video, src }: Props) {
+export function VideoCard({ video, thumbnail }: Props) {
   return (
     <div className="overflow-hidden rounded-lg border bg-background shadow-sm hover:shadow-md transition-shadow duration-300">
       <div className="aspect-video w-full bg-black">
-        <video className="h-full w-full" controls preload="metadata">
-          <source src={src} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        <img src={getThumbnail(thumbnail.id)} alt={video.title} className="h-full w-full object-cover" />
       </div>
 
       <div className="space-y-2 p-4">

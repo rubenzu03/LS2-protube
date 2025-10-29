@@ -1,12 +1,12 @@
-import { getEnv } from '@/utils/env';
 import type { Video } from '@/types/videos';
 import { VideoCameraIcon } from '@heroicons/react/24/solid';
 import { VideoCard } from '@/components/video-card';
 import { useAllVideos } from '@/hooks/video-hooks';
 import { Layout } from '@/components/layout/layout';
+import type { Thumbnail } from '@/utils/api';
 
 export function Home() {
-  const { loading, message, value } = useAllVideos();
+  const { loading, message, videos, thumbnails } = useAllVideos();
 
   if (loading === 'loading') {
     return (
@@ -42,9 +42,11 @@ export function Home() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {value.map((video: Video) => (
-            <VideoCard key={video.id} video={video} src={`${getEnv().API_BASE_URL}/videos/stream/${video.id}`} />
-          ))}
+          {videos.map((video: Video) => {
+            const t = thumbnails.find((thumbnail: Thumbnail) => String(thumbnail.id) === String(video.id))
+              ?? ({ id: video.id, filename: '' } as Thumbnail);
+            return <VideoCard key={video.id} video={video} thumbnail={t} />;
+          })}
         </div>
       </div>
     </Layout>

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useLayoutEffect, useState } from 'react';
 
 type Theme = 'dark' | 'light' | 'system'
 
@@ -30,7 +30,7 @@ export function ThemeProvider({
     () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = window.document.documentElement;
 
     root.classList.remove('light', 'dark');
@@ -63,11 +63,12 @@ export function ThemeProvider({
   );
 }
 
-export const useTheme = () => {
+// eslint-disable-next-line react-refresh/only-export-components
+export function useTheme() {
   const context = useContext(ThemeProviderContext);
 
   if (context === undefined)
     throw new Error('useTheme must be used within a ThemeProvider');
 
   return context;
-};
+}
