@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { Home } from '@/components/pages/home';
 import { ThemeProvider } from './components/theme-provider';
+import { VideoPage } from './components/pages/video-page';
 
 const queryClient = new QueryClient();
 
@@ -12,7 +13,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/video/:id" element={<>Yow</>} />
+            <Route path="/video/:id" element={<VideoPage />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

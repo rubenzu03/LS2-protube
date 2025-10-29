@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import { getEnv } from '../utils/Env';
+import { getEnv } from '../utils/env';
 import type { Video } from '@/types/videos';
 
 type LoadingState = 'loading' | 'success' | 'error' | 'idle';

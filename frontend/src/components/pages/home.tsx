@@ -1,4 +1,4 @@
-import { getEnv } from '@/utils/Env';
+import { getEnv } from '@/utils/env';
 import type { Video } from '@/types/videos';
 import { VideoCameraIcon } from '@heroicons/react/24/solid';
 import { VideoCard } from '@/components/video-card';
