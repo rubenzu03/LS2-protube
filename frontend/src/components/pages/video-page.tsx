@@ -8,6 +8,8 @@ import { VideoPlayer } from '@/components/video/video-player';
 import { ChannelActions } from '@/components/video/channel-actions';
 import { VideoDescription } from '@/components/video/video-description';
 import { RecommendedList } from '@/components/video/recommended-list';
+import { useEffect } from 'react';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 
 export function VideoPage() {
   const { id } = useParams();
@@ -17,9 +19,15 @@ export function VideoPage() {
     queryFn: () => getVideo(id!)
   });
 
+  useDocumentTitle(`ProTube - ${data?.title}`);
+
   const { videos, thumbnails, loading: recLoading } = useAllVideos();
 
   const playerSrc = data ? getVideoStreamUrl(data.id) : undefined;
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [id]);
 
   return (
     <Layout>

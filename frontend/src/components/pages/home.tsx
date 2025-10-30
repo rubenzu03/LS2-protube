@@ -3,9 +3,12 @@ import { VideoCard } from '@/components/video-card';
 import { useAllVideos } from '@/hooks/video-hooks';
 import { Layout } from '@/components/layout/layout';
 import type { Thumbnail } from '@/utils/api';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 
 export function Home() {
   const { loading, message, videos, thumbnails } = useAllVideos();
+
+  useDocumentTitle('ProTube - Home');
 
   if (loading === 'loading') {
     return (
