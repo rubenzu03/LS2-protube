@@ -1,7 +1,7 @@
 import { useParams } from 'react-router';
 import { Layout } from '../layout/layout';
 import { useQuery } from '@tanstack/react-query';
-import { getVideo, getVideoStreamUrl } from '@/utils/api';
+import { getVideoPageData, getVideoStreamUrl } from '@/utils/api';
 import { ChevronRightIcon } from '@heroicons/react/24/solid';
 import { useAllVideos } from '@/hooks/video-hooks';
 import { VideoPlayer } from '@/components/video/video-player';
@@ -15,15 +15,17 @@ export function VideoPage() {
   const { id } = useParams();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['video', id],
-    queryFn: () => getVideo(id!)
+    queryKey: ['videoPage', id],
+    queryFn: () => getVideoPageData(id!)
   });
 
-  useDocumentTitle(`ProTube - ${data?.title}`);
+  const { video, thumbnail } = data ?? { video: undefined, thumbnail: undefined };
+
+  useDocumentTitle(`ProTube - ${video?.title}`);
 
   const { videos, thumbnails, loading: recLoading } = useAllVideos();
 
-  const playerSrc = data ? getVideoStreamUrl(data.id) : undefined;
+  const playerSrc = video ? getVideoStreamUrl(video.id) : undefined;
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -32,26 +34,22 @@ export function VideoPage() {
   return (
     <Layout>
       <div className="mx-auto max-w-[1400px] px-6 py-6">
-        <div className="flex gap-6">
-          <div className="flex flex-1 flex-col gap-3">
-            <VideoPlayer key={id} src={playerSrc} isLoading={isLoading} error={(error as Error | undefined)?.message} />
-
-            {data && (
-              <h1 className="text-xl font-semibold leading-relaxed">{data.title}</h1>
+        <div className="flex gap-10">
+          <div className="flex flex-1 flex-col gap-3 relative">
+            {thumbnail && (
+              <div className="absolute -top-9 -left-20 blur-[100px] opacity-15 aspect-video w-[1100px]">
+                <img src={thumbnail} alt={video?.title} className="w-full h-full object-cover rounded-lg" />
+              </div>
             )}
-
-            <ChannelActions uploaderId={data?.userId} />
-
-            <VideoDescription description={data?.description} />
+            <VideoPlayer key={id} src={playerSrc} isLoading={isLoading} error={(error as Error | undefined)?.message} />
+            {video && (
+              <h1 className="text-xl font-semibold leading-relaxed">{video.title}</h1>
+            )}
+            <ChannelActions uploaderId={video?.userId} />
+            <VideoDescription description={video?.description} />
           </div>
 
-          <div className="flex w-[380px] flex-col gap-4">
-            <div className="flex items-center gap-3 border-b border-border">
-              <button className="border-b-2 border-foreground px-3 pb-2 text-sm font-medium">All</button>
-              <button className="px-3 pb-2 text-sm font-medium text-muted-foreground hover:text-foreground">Related</button>
-              <button className="px-3 pb-2 text-sm font-medium text-muted-foreground hover:text-foreground">Channel</button>
-            </div>
-
+          <div className="flex w-[450px] flex-col gap-4">
             {recLoading === 'loading' ? (
               <div className="flex items-center justify-center py-6">
                 <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-indigo-600" />

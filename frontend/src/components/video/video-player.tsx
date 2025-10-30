@@ -5,12 +5,13 @@ type Props = {
   isLoading?: boolean;
   error?: string;
   poster?: string;
+  children?: React.ReactNode;
 };
 
 const MUTED_KEY = 'protube_muted';
 const VOLUME_KEY = 'protube_volume';
 
-export function VideoPlayer({ src, isLoading, error, poster }: Props) {
+export function VideoPlayer({ src, isLoading, error, poster, children }: Props) {
   const [isReady, setIsReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const getStoredVolume = () => {
@@ -29,14 +30,11 @@ export function VideoPlayer({ src, isLoading, error, poster }: Props) {
     setIsReady(false);
   }, [src]);
 
-  // no-op: state initialized from localStorage synchronously above
-
   useEffect(() => {
     if (!isReady || !videoRef.current) return;
     const el = videoRef.current;
     el.muted = muted;
     el.volume = volume;
-    // Only try to play if not already paused by user
     if (el.paused) {
       el.play().catch(() => {});
     }

@@ -12,7 +12,7 @@ export function Home() {
 
   if (loading === 'loading') {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="flex h-screen w-full items-center justify-center">
         <div className="flex flex-col items-center gap-3 text-center">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-indigo-600" />
           <p className="text-sm text-muted-foreground">Loading videos...</p>
@@ -23,10 +23,10 @@ export function Home() {
 
   if (loading === 'error') {
     return (
-      <div className="mx-auto max-w-6xl p-6">
-        <div className="rounded-lg border border-red-300 bg-red-50 p-6">
-          <h3 className="mb-2 text-lg font-semibold text-red-700">Something went wrong</h3>
-          <p className="text-sm text-red-600">{message}</p>
+      <div className="flex items-center justify-center h-screen w-full">
+        <div className="flex flex-col items-center gap-2 p-3 rounded-lg border border-destructive">
+          <h3 className="text-lg font-semibold text-destructive">Something went wrong</h3>
+          <p className="text-sm text-muted-foreground">{message}</p>
         </div>
       </div>
     );

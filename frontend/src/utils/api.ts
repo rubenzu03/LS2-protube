@@ -11,6 +11,12 @@ export const getVideo = async (id: string) => {
   return response.data;
 };
 
+export const getVideoPageData = async (id: string) => {
+  const response = await api.get<Video>(`/videos/${id}`);
+  const thumbnailResponse = getThumbnail(id);
+  return { video: response.data, thumbnail: thumbnailResponse };
+};
+
 export type Thumbnail = {
   id: string | number;
   filename: string;

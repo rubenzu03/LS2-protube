@@ -52,7 +52,7 @@ export function ChannelActions({ uploaderId }: Props) {
 
         <Button variant="ghost" className="rounded-full px-4 hover:bg-accent">
           <PlusCircleIcon className="h-5 w-5" />
-          <span className="text-sm font-medium">Thanks</span>
+          <span className="text-sm font-medium">Add to playlist</span>
         </Button>
 
         <Button variant="ghost" className="rounded-full px-3 hover:bg-accent">
