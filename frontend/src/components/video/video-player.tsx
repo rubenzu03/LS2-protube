@@ -7,29 +7,47 @@ type Props = {
   poster?: string;
 };
 
+const MUTED_KEY = 'protube_muted';
+const VOLUME_KEY = 'protube_volume';
+
 export function VideoPlayer({ src, isLoading, error, poster }: Props) {
   const [isReady, setIsReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const VOLUME_KEY = 'protube_volume';
-  const [volume, setVolume] = useState(0.5);
+  const getStoredVolume = () => {
+    const stored = localStorage.getItem(VOLUME_KEY);
+    const parsed = stored != null ? parseFloat(stored) : NaN;
+    return Number.isFinite(parsed) ? Math.max(0, Math.min(1, parsed)) : 0.5;
+  };
+  const getStoredMuted = () => localStorage.getItem(MUTED_KEY) === 'true';
+  const initialVolume = getStoredVolume();
+  const initialMuted = getStoredMuted();
+  const [volume, setVolume] = useState(initialVolume);
+  const [muted, setMuted] = useState(initialMuted);
+  const lastVolumeRef = useRef(initialVolume);
+  const prevMutedRef = useRef(initialMuted);
   useEffect(() => {
     setIsReady(false);
   }, [src]);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(VOLUME_KEY);
-    if (stored != null) {
-      const parsed = Math.max(0, Math.min(1, parseFloat(stored)));
-      if (!Number.isNaN(parsed)) setVolume(parsed);
-    }
-  }, []);
+  // no-op: state initialized from localStorage synchronously above
 
   useEffect(() => {
-    if (isReady && videoRef.current) {
-      videoRef.current.play().catch(() => {});
-      videoRef.current.volume = volume;
+    if (!isReady || !videoRef.current) return;
+    const el = videoRef.current;
+    el.muted = muted;
+    el.volume = volume;
+    // Only try to play if not already paused by user
+    if (el.paused) {
+      el.play().catch(() => {});
     }
-  }, [isReady, volume]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReady]);
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+    videoRef.current.muted = muted;
+    videoRef.current.volume = volume;
+  }, [muted, volume]);
 
   return (
     <div className="group relative aspect-video w-[960px] max-w-full shrink-0 overflow-hidden rounded-xl bg-black duration-500 transition-all">
@@ -47,14 +65,32 @@ export function VideoPlayer({ src, isLoading, error, poster }: Props) {
           playsInline
           preload="auto"
           poster={isReady ? poster : undefined}
+          muted={muted}
           onCanPlay={() => setIsReady(true)}
           onCanPlayThrough={() => setIsReady(true)}
           onLoadedData={() => setIsReady(true)}
           onVolumeChange={() => {
             if (!videoRef.current) return;
-            const v = Math.max(0, Math.min(1, videoRef.current.volume));
-            setVolume(v);
-            localStorage.setItem(VOLUME_KEY, String(v));
+            const el = videoRef.current;
+            const newMuted = !!el.muted;
+            const newVolume = Math.max(0, Math.min(1, el.volume));
+
+            // If just unmuted and volume jumped to 1, restore last saved volume
+            if (!newMuted && prevMutedRef.current) {
+              const target = lastVolumeRef.current;
+              if (Math.abs(newVolume - target) > 0.001) {
+                el.volume = target;
+              }
+            }
+
+            if (!newMuted) {
+              setVolume(el.volume);
+              localStorage.setItem(VOLUME_KEY, String(el.volume));
+              lastVolumeRef.current = el.volume;
+            }
+            setMuted(newMuted);
+            localStorage.setItem(MUTED_KEY, String(newMuted));
+            prevMutedRef.current = newMuted;
           }}
         >
           <source src={src} type="video/mp4" />

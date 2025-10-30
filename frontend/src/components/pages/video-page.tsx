@@ -1,8 +1,7 @@
 import { useParams } from 'react-router';
 import { Layout } from '../layout/layout';
 import { useQuery } from '@tanstack/react-query';
-import { getVideo } from '@/utils/api';
-import { getEnv } from '@/utils/env';
+import { getVideo, getVideoStreamUrl } from '@/utils/api';
 import { ChevronRightIcon } from '@heroicons/react/24/solid';
 import { useAllVideos } from '@/hooks/video-hooks';
 import { VideoPlayer } from '@/components/video/video-player';
@@ -20,7 +19,7 @@ export function VideoPage() {
 
   const { videos, thumbnails, loading: recLoading } = useAllVideos();
 
-  const playerSrc = data ? `${getEnv().API_BASE_URL}/videos/stream/${data.id}` : undefined;
+  const playerSrc = data ? getVideoStreamUrl(data.id) : undefined;
 
   return (
     <Layout>

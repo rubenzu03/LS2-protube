@@ -24,3 +24,7 @@ export const getThumbnails = async () => {
 export const getThumbnail = (id: string | number) => {
   return `${getEnv().API_BASE_URL}/videos/thumbnail/${id}`;
 };
+
+export const getVideoStreamUrl = (id: string | number) => {
+  return `${getEnv().API_BASE_URL}/videos/stream/${id}`;
+};

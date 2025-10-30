@@ -1,5 +1,4 @@
 import type { Video } from '@/types/videos';
-import { VideoCameraIcon } from '@heroicons/react/24/solid';
 import { VideoCard } from '@/components/video-card';
 import { useAllVideos } from '@/hooks/video-hooks';
 import { Layout } from '@/components/layout/layout';
