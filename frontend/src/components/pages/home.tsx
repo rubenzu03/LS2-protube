@@ -32,22 +32,12 @@ export function Home() {
 
   return (
     <Layout>
-      <div className="mx-auto max-w-6xl p-6">
-        <div className="mb-6 flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold">Featured Videos</h2>
-            <VideoCameraIcon className="h-6 w-6 text-indigo-600" />
-          </div>
-          <p className="text-sm text-muted-foreground">Explore our curated collection</p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {videos.map((video: Video) => {
-            const t = thumbnails.find((thumbnail: Thumbnail) => String(thumbnail.id) === String(video.id))
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-10">
+        {videos.map((video: Video) => {
+          const t = thumbnails.find((thumbnail: Thumbnail) => String(thumbnail.id) === String(video.id))
               ?? ({ id: video.id, filename: '' } as Thumbnail);
-            return <VideoCard key={video.id} video={video} thumbnail={t} />;
-          })}
-        </div>
+          return <VideoCard key={video.id} video={video} thumbnail={t} />;
+        })}
       </div>
     </Layout>
   );
