@@ -7,6 +7,7 @@ public record VideoDTO(
         float height,
         float duration,
         String description,
+        String filename,
         Long userId,
         Long categoryId,
         Long tagId,
