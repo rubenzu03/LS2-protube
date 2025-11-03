@@ -12,9 +12,9 @@ import java.util.List;
 @Setter
 public class User {
     @Id
-    private String username;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String authId;
+    private String username;
     private String password;
     @OneToMany(mappedBy = "user")
     private List<Video> videos;
@@ -23,13 +23,17 @@ public class User {
 
     public User() {}
 
-    public User(String username, String authId) {
+    // Constructor used by tests
+    public User(Long id, String username) {
+        this.id = id;
         this.username = username;
-        this.authId = authId;
     }
+
+
 
     public User(UserDTO userDTO) {
         this.username = userDTO.username();
+        this.password = userDTO.password();
     }
 
     public void updateUser(String username) {

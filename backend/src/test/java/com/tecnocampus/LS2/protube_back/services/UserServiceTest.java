@@ -48,7 +48,8 @@ class UserServiceTest {
         VideoRepository videoRepository = Mockito.mock(VideoRepository.class);
         CommentRepository commentRepository = Mockito.mock(CommentRepository.class);
 
-        UserDTO dto = new UserDTO(null, "u", null, null);
+        // UserDTO(username, id, password, videoId, commentId)
+        UserDTO dto = new UserDTO("u", null, null, null, null);
         User saved = new User(dto);
         saved.setId(7L);
 
@@ -62,4 +63,3 @@ class UserServiceTest {
         assertEquals("u", result.username());
     }
 }
-

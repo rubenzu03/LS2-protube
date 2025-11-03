@@ -9,8 +9,10 @@ DROP TABLE IF EXISTS users;
 
 -- Create Users table
 CREATE TABLE users (
-    id BIGINT PRIMARY KEY,
-    username VARCHAR(255) NOT NULL
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    authId VARCHAR(255),
+    password VARCHAR(255)
 );
 
 -- Create Categories table
@@ -153,5 +155,3 @@ INSERT INTO videos (id, title, width, height, duration, description, filename, u
 
 INSERT INTO videos (id, title, width, height, duration, description, filename, user_id) VALUES
 (105, 'Video 105', 1920, 1080, 30.0, 'Video from store', '105.mp4', 1);
-
-

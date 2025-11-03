@@ -72,7 +72,7 @@ public class UserService {
     }
 
     private UserDTO toDTO(User user) {
-        return new UserDTO(user.getUsername(), user.getId(),  null, null, null, null);
+        return new UserDTO(user.getUsername(), user.getId(), null, null, null);
     }
 
     private User toDomain(UserDTO userDTO) {
