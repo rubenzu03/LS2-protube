@@ -79,6 +79,7 @@ INSERT INTO users (id, username) VALUES (7, 'Danny Ocean');
 INSERT INTO users (id, username) VALUES (8, 'Songkick');
 INSERT INTO users (id, username) VALUES (9, 'Rudimental');
 INSERT INTO users (id, username) VALUES (10, 'jlopeza');
+INSERT INTO users (id, username) VALUES (11, 'The Midnight');
 
 -- Populate Videos
 INSERT INTO videos (id, title, width, height, duration, description, filename, user_id) VALUES
@@ -155,3 +156,7 @@ INSERT INTO videos (id, title, width, height, duration, description, filename, u
 
 INSERT INTO videos (id, title, width, height, duration, description, filename, user_id) VALUES
 (105, 'Video 105', 1920, 1080, 30.0, 'Video from store', '105.mp4', 1);
+
+INSERT INTO videos (id, title, width, height, duration, description, filename, user_id) VALUES
+    (106, 'The Midnight - Gloria', 1920, 1080, 30.0, 'The Midnight\'s best fucking song', '108.mp4', 11);
+
