@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/videos")
@@ -30,6 +29,11 @@ public class VideoController {
     @GetMapping()
     public ResponseEntity<List<VideoDTO>> getVideos() {
         return ResponseEntity.ok().body(videoService.getVideos());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<VideoDTO>> searchVideos(@RequestParam("q") String query) {
+        return ResponseEntity.ok().body(videoService.getVideosBySearch(query));
     }
 
     @GetMapping("/{id}")

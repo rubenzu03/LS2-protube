@@ -55,13 +55,13 @@ public class VideoService {
                 continue;
 
             SimilarityResult result = calculateTitleSimilarity(normalize(title), normalizedSearch);
-            scored.add(new ScoredVideo(video, result.score(), result.isExactMatch()));
+            scored.add(new ScoredVideo(video, result.score(), result.isMatch()));
         }
 
-        scored.sort(Comparator
-                .comparing(ScoredVideo::score).reversed());
+        scored.sort(Comparator.comparing(ScoredVideo::score).reversed());
 
         return scored.stream()
+                .filter(ScoredVideo::isMatch)
                 .map(sv -> toDTO(sv.video()))
                 .collect(Collectors.toList());
     }
@@ -138,7 +138,12 @@ public class VideoService {
     }
 
     private static String normalize(String value) {
-        return value == null ? "" : value.trim().toLowerCase();
+        if (value == null) {
+            return "";
+        }
+        String lowered = value.trim().toLowerCase();
+        String normalized = java.text.Normalizer.normalize(lowered, java.text.Normalizer.Form.NFD);
+        return normalized.replaceAll("\\p{M}", "");
     }
 
     private static SimilarityResult calculateTitleSimilarity(String firstTitle, String secondTitle) {
@@ -181,8 +186,8 @@ public class VideoService {
             similarityScore = Math.max(similarityScore, 0.9);
         }
 
-        final double EXACT_MATCH_THRESHOLD = 0.90;
-        final double SIMILARITY_THRESHOLD = 0.80;
+        final double EXACT_MATCH_THRESHOLD = 0.9;
+        final double SIMILARITY_THRESHOLD = 0.7;
 
         boolean isExact = similarityScore >= EXACT_MATCH_THRESHOLD;
         boolean isMatch = similarityScore >= SIMILARITY_THRESHOLD;
