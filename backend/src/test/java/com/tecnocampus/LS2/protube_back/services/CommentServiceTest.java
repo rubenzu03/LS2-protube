@@ -8,7 +8,6 @@ import com.tecnocampus.LS2.protube_back.persistence.UserRepository;
 import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.CommentDTO;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import java.util.List;
@@ -55,7 +54,7 @@ class CommentServiceTest {
 
         List<CommentDTO> comments = service.getComments();
         assertEquals(1, comments.size());
-        CommentDTO dto = comments.get(0);
+        CommentDTO dto = comments.iterator().next();
         assertEquals(1L, dto.id());
         assertEquals("hello", dto.content());
         assertEquals(10L, dto.userId());
