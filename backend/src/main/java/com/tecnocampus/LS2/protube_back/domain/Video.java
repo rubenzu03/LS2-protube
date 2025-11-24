@@ -17,6 +17,8 @@ public class Video {
     private float width;
     private float height;
     private float duration;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String filename;
     @ManyToOne
@@ -59,5 +61,3 @@ public class Video {
         this.description = videoDTO.description();
     }
 }
-
-
