@@ -9,6 +9,9 @@ import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.CommentDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 import java.util.Optional;
@@ -90,7 +93,16 @@ class CommentServiceTest {
 
         CommentDTO input = new CommentDTO(null, "new", 5L, 6L,"test");
 
-        when(userRepository.getReferenceById(5L)).thenReturn(new User(5L, "u"));
+        Authentication auth = Mockito.mock(Authentication.class);
+        when(auth.isAuthenticated()).thenReturn(true);
+        when(auth.getPrincipal()).thenReturn("u");
+        when(auth.getName()).thenReturn("u");
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByUsername("u")).thenReturn(new User(5L, "u"));
+
         Video vid = new Video(); vid.setId(6L);
         when(videoRepository.getReferenceById(6L)).thenReturn(vid);
 
@@ -102,14 +114,18 @@ class CommentServiceTest {
 
         CommentService service = new CommentService(commentRepository, userRepository, videoRepository);
 
-        CommentDTO out = service.createComment(input);
-        assertNotNull(out);
-        assertEquals(100L, out.id());
-        assertEquals("new", out.content());
-        assertEquals(5L, out.userId());
-        assertEquals(6L, out.videoId());
+        try {
+            CommentDTO out = service.createComment(input);
+            assertNotNull(out);
+            assertEquals(100L, out.id());
+            assertEquals("new", out.content());
+            assertEquals(5L, out.userId());
+            assertEquals(6L, out.videoId());
 
-        verify(commentRepository, atLeastOnce()).save(any(Comment.class));
+            verify(commentRepository, atLeastOnce()).save(any(Comment.class));
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
     }
 
     @Test
