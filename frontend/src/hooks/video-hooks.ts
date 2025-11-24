@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { getEnv } from '../utils/env';
-import type { Video } from '@/types/videos';
+import type { Video, User } from '@/types/videos';
 import type { Thumbnail } from '@/utils/api';
 
 type LoadingState = 'loading' | 'success' | 'error' | 'idle';
@@ -39,6 +39,49 @@ export function useAllVideos() {
   const message = isError ? 'Error fetching videos: ' + error.message : isLoading ? 'Loading...' : '';
 
   return { videos: data?.videos ?? [], thumbnails: data?.thumbnails ?? [], message, loading };
+}
+
+type ChannelDataResponse = {
+  user: User;
+  videos: Video[];
+  thumbnails: Thumbnail[];
+};
+
+export function useChannelData(userId: string) {
+  const { data, isLoading, isError, isSuccess, error } = useQuery({
+    queryKey: ['channelData', userId],
+    queryFn: async (): Promise<ChannelDataResponse> => {
+      const [userResponse, videosResponse, thumbnailsResponse] = await Promise.all([
+        axios.get<User>(`${getEnv().API_BASE_URL}/user/byId/${userId}`),
+        axios.get<Video[]>(`${getEnv().API_BASE_URL}/videos`),
+        axios.get<Thumbnail[]>(`${getEnv().API_BASE_URL}/videos/thumbnails`)
+      ]);
+      // Filter videos by this user
+      const userVideos = videosResponse.data.filter((video) => String(video.userId) === String(userId));
+      const videoIds = new Set(userVideos.map((video) => String(video.id)));
+      const thumbnails = thumbnailsResponse.data.filter((thumbnail) => videoIds.has(String(thumbnail.id)));
+      return { user: userResponse.data, videos: userVideos, thumbnails };
+    },
+    enabled: !!userId
+  });
+
+  const loading: LoadingState = isLoading
+    ? 'loading'
+    : isError
+      ? 'error'
+      : isSuccess
+        ? 'success'
+        : 'idle';
+
+  const message = isError ? 'Error fetching channel data: ' + error.message : isLoading ? 'Loading...' : '';
+
+  return {
+    user: data?.user ?? null,
+    videos: data?.videos ?? [],
+    thumbnails: data?.thumbnails ?? [],
+    message,
+    loading
+  };
 }
 
 export function useSearchVideos(query: string) {

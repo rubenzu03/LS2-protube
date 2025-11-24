@@ -11,3 +11,11 @@ export type Video = {
   tagId: string;
   commentId: string;
 };
+
+export type User = {
+  id: string;
+  username: string;
+  videoId?: string;
+  commentId?: string;
+};
+
