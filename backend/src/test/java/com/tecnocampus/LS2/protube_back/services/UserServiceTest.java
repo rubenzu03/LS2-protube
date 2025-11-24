@@ -61,6 +61,10 @@ class UserServiceTest {
         assertNotNull(result);
         assertEquals(7L, result.id());
         assertEquals("u", result.username());
+
+        com.tecnocampus.LS2.protube_back.domain.Comment comment = new com.tecnocampus.LS2.protube_back.domain.Comment();
+        comment.setContent("ok");
+        assertEquals("ok", comment.getContent());
     }
     @Test
     void deleteUser_existing_returnsDTOAndDeletes() {

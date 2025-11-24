@@ -261,4 +261,23 @@ class CommentServiceTest {
         assertNull(out.videoId());
     }
 
+    @Test
+    void comment_domain_constructor_and_updates_work() {
+        // exercise Comment domain methods from inside service tests to increase coverage
+        CommentDTO dto = new CommentDTO(null, "fromDto", null, null, null);
+        Comment c = new Comment(dto);
+        assertEquals("fromDto", c.getContent());
+
+        User u = new User(1L, "user1");
+        c.updateUser(u);
+        assertSame(u, c.getUser());
+
+        CommentDTO dto2 = new CommentDTO(null, "changed", null, null, null);
+        c.updateComment(dto2);
+        assertEquals("changed", c.getContent());
+
+        c.setId(999L);
+        assertEquals(999L, c.getId());
+    }
+
 }
