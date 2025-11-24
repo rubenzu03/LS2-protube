@@ -17,12 +17,12 @@ const mockVideo: Video = {
   userId: 'user123',
   categoryId: 'cat1',
   tagId: 'tag1',
-  commentId: 'comment1',
+  commentId: 'comment1'
 };
 
 const mockThumbnail: Thumbnail = {
   id: '1',
-  filename: 'thumbnail.jpg',
+  filename: 'thumbnail.jpg'
 };
 
 describe('VideoCard', () => {
@@ -114,4 +114,3 @@ describe('VideoCard', () => {
     expect(img).toBeInTheDocument();
   });
 });
-

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type InternalAxiosRequestConfig } from 'axios';
 import { getEnv } from './Env';
 import type { Video } from '@/types/videos';
 
@@ -10,16 +10,11 @@ export const api = axios.create({
 
 const TOKEN_KEY = 'protube_token';
 
-api.interceptors.request.use((config) => {
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (typeof window !== 'undefined') {
     const token = window.localStorage.getItem(TOKEN_KEY);
     if (token) {
-      if (!config.headers) {
-        config.headers = {} as any;
-      }
-      if (!('Authorization' in config.headers)) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+      config.headers.Authorization = `Bearer ${token}`;
     }
   }
   return config;

@@ -22,7 +22,7 @@ const mockVideos: Video[] = [
     userId: 'user1',
     categoryId: 'cat1',
     tagId: 'tag1',
-    commentId: 'comment1',
+    commentId: 'comment1'
   },
   {
     id: '2',
@@ -35,13 +35,13 @@ const mockVideos: Video[] = [
     userId: 'user2',
     categoryId: 'cat2',
     tagId: 'tag2',
-    commentId: 'comment2',
-  },
+    commentId: 'comment2'
+  }
 ];
 
 const mockThumbnails: Thumbnail[] = [
   { id: '1', filename: 'thumb1.jpg' },
-  { id: '2', filename: 'thumb2.jpg' },
+  { id: '2', filename: 'thumb2.jpg' }
 ];
 
 const createWrapper = () => {
@@ -63,7 +63,7 @@ describe('Home Page', () => {
       loading: 'loading',
       videos: [],
       thumbnails: [],
-      message: 'Loading...',
+      message: 'Loading...'
     });
 
     render(<Home />, { wrapper: createWrapper() });
@@ -77,7 +77,7 @@ describe('Home Page', () => {
       loading: 'error',
       videos: [],
       thumbnails: [],
-      message: errorMessage,
+      message: errorMessage
     });
 
     render(<Home />, { wrapper: createWrapper() });
@@ -91,7 +91,7 @@ describe('Home Page', () => {
       loading: 'success',
       videos: mockVideos,
       thumbnails: mockThumbnails,
-      message: '',
+      message: ''
     });
 
     render(<Home />, { wrapper: createWrapper() });
@@ -105,7 +105,7 @@ describe('Home Page', () => {
       loading: 'success',
       videos: mockVideos,
       thumbnails: mockThumbnails,
-      message: '',
+      message: ''
     });
 
     render(<Home />, { wrapper: createWrapper() });
@@ -119,7 +119,7 @@ describe('Home Page', () => {
       loading: 'success',
       videos: [],
       thumbnails: [],
-      message: '',
+      message: ''
     });
 
     const { container } = render(<Home />, { wrapper: createWrapper() });
@@ -128,4 +128,3 @@ describe('Home Page', () => {
     expect(videoCards).toHaveLength(0);
   });
 });
-

@@ -6,7 +6,7 @@ const mockNavigate = jest.fn();
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => mockNavigate
 }));
 
 describe('SearchBar', () => {
@@ -88,4 +88,3 @@ describe('SearchBar', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/search?q=trimmed');
   });
 });
-

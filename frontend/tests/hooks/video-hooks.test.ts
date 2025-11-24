@@ -20,7 +20,7 @@ const mockVideos: Video[] = [
     userId: 'user1',
     categoryId: 'cat1',
     tagId: 'tag1',
-    commentId: 'comment1',
+    commentId: 'comment1'
   },
   {
     id: '2',
@@ -33,22 +33,22 @@ const mockVideos: Video[] = [
     userId: 'user2',
     categoryId: 'cat2',
     tagId: 'tag2',
-    commentId: 'comment2',
-  },
+    commentId: 'comment2'
+  }
 ];
 
 const mockThumbnails: Thumbnail[] = [
   { id: '1', filename: 'thumb1.jpg' },
-  { id: '2', filename: 'thumb2.jpg' },
+  { id: '2', filename: 'thumb2.jpg' }
 ];
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        retry: false,
-      },
-    },
+        retry: false
+      }
+    }
   });
 
   return ({ children }: { children: React.ReactNode }) =>
@@ -64,7 +64,7 @@ describe('useAllVideos', () => {
     (api.get as jest.Mock).mockImplementation(() => new Promise(() => {}));
 
     const { result } = renderHook(() => useAllVideos(), {
-      wrapper: createWrapper(),
+      wrapper: createWrapper()
     });
 
     expect(result.current.loading).toBe('loading');
@@ -78,7 +78,7 @@ describe('useAllVideos', () => {
       .mockResolvedValueOnce({ data: mockThumbnails });
 
     const { result } = renderHook(() => useAllVideos(), {
-      wrapper: createWrapper(),
+      wrapper: createWrapper()
     });
 
     await waitFor(() => {
@@ -93,7 +93,7 @@ describe('useAllVideos', () => {
     (api.get as jest.Mock).mockRejectedValue(new Error('Network error'));
 
     const { result } = renderHook(() => useAllVideos(), {
-      wrapper: createWrapper(),
+      wrapper: createWrapper()
     });
 
     await waitFor(() => {
@@ -111,7 +111,7 @@ describe('useAllVideos', () => {
       .mockResolvedValueOnce({ data: mockThumbnails });
 
     renderHook(() => useAllVideos(), {
-      wrapper: createWrapper(),
+      wrapper: createWrapper()
     });
 
     await waitFor(() => {
@@ -120,4 +120,3 @@ describe('useAllVideos', () => {
     });
   });
 });
-

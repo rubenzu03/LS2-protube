@@ -3,27 +3,27 @@ import App from '@/App';
 
 // Mock child components to simplify testing
 jest.mock('@/components/pages/home', () => ({
-  Home: () => <div>Home Page</div>,
+  Home: () => <div>Home Page</div>
 }));
 
 jest.mock('@/components/pages/video-page', () => ({
-  VideoPage: () => <div>Video Page</div>,
+  VideoPage: () => <div>Video Page</div>
 }));
 
 jest.mock('@/components/pages/search-page', () => ({
-  SearchPage: () => <div>Search Page</div>,
+  SearchPage: () => <div>Search Page</div>
 }));
 
 jest.mock('@/components/pages/auth', () => ({
-  AuthPage: () => <div>Auth Page</div>,
+  AuthPage: () => <div>Auth Page</div>
 }));
 
 jest.mock('@/components/pages/channel-page', () => ({
-  ChannelPage: () => <div>Channel Page</div>,
+  ChannelPage: () => <div>Channel Page</div>
 }));
 
 jest.mock('@/components/theme-provider', () => ({
-  ThemeProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>
 }));
 
 describe('App', () => {
@@ -37,4 +37,3 @@ describe('App', () => {
     expect(container.firstChild).toBeInTheDocument();
   });
 });
-

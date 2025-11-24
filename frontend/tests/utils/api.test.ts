@@ -6,7 +6,7 @@ jest.mock('@/utils/Env');
 describe('API Utils', () => {
   beforeEach(() => {
     (getEnv as jest.Mock).mockReturnValue({
-      API_BASE_URL: 'http://localhost:8080',
+      API_BASE_URL: 'http://localhost:8080'
     });
   });
 
@@ -45,4 +45,3 @@ describe('API Utils', () => {
     });
   });
 });
-

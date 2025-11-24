@@ -7,19 +7,19 @@ export const api = {
     baseURL: 'http://localhost:8080',
     headers: {
       common: {
-        Authorization: undefined,
-      },
-    },
+        Authorization: undefined
+      }
+    }
   },
   interceptors: {
     request: {
       use: jest.fn(),
-      handlers: [],
+      handlers: []
     },
     response: {
-      use: jest.fn(),
-    },
-  },
+      use: jest.fn()
+    }
+  }
 };
 
 export const getThumbnail = jest.fn((id: string | number) => `http://localhost:8080/videos/thumbnail/${id}`);
@@ -27,4 +27,3 @@ export const getVideoStreamUrl = jest.fn((id: string | number) => `http://localh
 export const getVideo = jest.fn();
 export const getVideoPageData = jest.fn();
 export const getThumbnails = jest.fn();
-
