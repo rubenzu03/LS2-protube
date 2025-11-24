@@ -109,7 +109,11 @@ export function CommentsSection({ videoId }: Props) {
             <div className="h-9 w-9 rounded-full bg-muted" />
             <div className="flex-1 space-y-1">
               <p className="text-xs font-semibold">
-                {comment.userId != null ? `User #${comment.userId}` : 'Anonymous'}
+                {comment.username && comment.username.trim().length > 0
+                  ? comment.username
+                  : comment.userId != null
+                    ? `User #${comment.userId}`
+                    : 'Anonymous'}
               </p>
               <p className="text-sm text-foreground">{comment.content}</p>
             </div>

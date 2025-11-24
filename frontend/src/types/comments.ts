@@ -3,4 +3,5 @@ export type Comment = {
   content: string;
   userId: number | null;
   videoId: number | null;
+  username?: string | null;
 };
