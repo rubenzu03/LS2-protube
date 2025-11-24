@@ -20,7 +20,8 @@ public class CommentService {
     public final VideoRepository videoRepository;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, UserRepository userRepository, VideoRepository videoRepository) {
+    public CommentService(CommentRepository commentRepository, UserRepository userRepository,
+            VideoRepository videoRepository) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.videoRepository = videoRepository;
@@ -36,6 +37,16 @@ public class CommentService {
         return commentRepository.findById(id)
                 .map(this::toDTO)
                 .orElse(null);
+    }
+
+    public List<CommentDTO> getCommentsByVideoId(Long videoId) {
+        Video video = videoRepository.findById(videoId).orElse(null);
+        if (video == null) {
+            return List.of();
+        }
+        return commentRepository.findByVideo(video).stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     public CommentDTO createComment(CommentDTO dto) {
@@ -83,8 +94,7 @@ public class CommentService {
                 comment.getId(),
                 comment.getContent(),
                 comment.getUser() != null ? comment.getUser().getId() : null,
-                comment.getVideo() != null ? comment.getVideo().getId() : null
-        );
+                comment.getVideo() != null ? comment.getVideo().getId() : null);
     }
 
     private Comment toDomain(CommentDTO commentDTO) {

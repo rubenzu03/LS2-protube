@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import { getEnv } from '../utils/env';
+import { api } from '@/utils/api';
 import type { Video } from '@/types/videos';
 import type { Thumbnail } from '@/utils/api';
 
@@ -21,8 +20,8 @@ export function useAllVideos() {
     queryKey: ['videos&thumbnails'],
     queryFn: async (): Promise<GetAllVideosResponse> => {
       const [videosResponse, thumbnailsResponse] = await Promise.all([
-        axios.get<Video[]>(`${getEnv().API_BASE_URL}/videos`),
-        axios.get<Thumbnail[]>(`${getEnv().API_BASE_URL}/videos/thumbnails`)
+        api.get<Video[]>('/videos'),
+        api.get<Thumbnail[]>('/videos/thumbnails')
       ]);
       return { videos: videosResponse.data, thumbnails: thumbnailsResponse.data };
     }
@@ -47,8 +46,8 @@ export function useSearchVideos(query: string) {
     queryKey: ['searchVideos', trimmedQuery],
     queryFn: async (): Promise<SearchVideosResponse> => {
       const [videosResponse, thumbnailsResponse] = await Promise.all([
-        axios.get<Video[]>(`${getEnv().API_BASE_URL}/videos/search?q=${encodeURIComponent(trimmedQuery)}`),
-        axios.get<Thumbnail[]>(`${getEnv().API_BASE_URL}/videos/thumbnails`)
+        api.get<Video[]>(`/videos/search?q=${encodeURIComponent(trimmedQuery)}`),
+        api.get<Thumbnail[]>('/videos/thumbnails')
       ]);
       const videos = videosResponse.data;
       const thumbnailIds = new Set(videos.map((video) => String(video.id)));

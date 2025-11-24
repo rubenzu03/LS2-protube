@@ -22,6 +22,11 @@ public class CommentController {
         return ResponseEntity.ok().body(commentService.getComments());
     }
 
+    @GetMapping("/video/{videoId}")
+    public ResponseEntity<List<CommentDTO>> getCommentsByVideo(@PathVariable Long videoId) {
+        return ResponseEntity.ok().body(commentService.getCommentsByVideoId(videoId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<CommentDTO> getComment(@PathVariable Long id) {
         return ResponseEntity.ok().body(commentService.getCommentById(id));

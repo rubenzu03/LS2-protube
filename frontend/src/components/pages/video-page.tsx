@@ -8,6 +8,7 @@ import { VideoPlayer } from '@/components/video/video-player';
 import { ChannelActions } from '@/components/video/channel-actions';
 import { VideoDescription } from '@/components/video/video-description';
 import { RecommendedList } from '@/components/video/recommended-list';
+import { CommentsSection } from '@/components/video/comments-section';
 import { useEffect } from 'react';
 import { useDocumentTitle } from '@/hooks/use-document-title';
 
@@ -47,6 +48,7 @@ export function VideoPage() {
             )}
             <ChannelActions uploaderId={video?.userId} />
             <VideoDescription description={video?.description} />
+            <CommentsSection videoId={id} />
           </div>
 
           <div className="flex w-[450px] flex-col gap-4">
