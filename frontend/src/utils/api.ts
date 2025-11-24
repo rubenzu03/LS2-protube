@@ -2,8 +2,25 @@ import axios from 'axios';
 import { getEnv } from './env';
 import type { Video } from '@/types/videos';
 
+const { API_BASE_URL } = getEnv();
+
 export const api = axios.create({
-  baseURL: getEnv().API_BASE_URL
+  baseURL: API_BASE_URL
+});
+
+const TOKEN_KEY = 'protube_token';
+
+api.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
+    const token = window.localStorage.getItem(TOKEN_KEY);
+    if (token) {
+      config.headers = config.headers ?? {};
+      if (!('Authorization' in config.headers)) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+  }
+  return config;
 });
 
 export const getVideo = async (id: string) => {

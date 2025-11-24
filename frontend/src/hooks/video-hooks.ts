@@ -1,7 +1,6 @@
-import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import { getEnv } from '../utils/env';
-import type { Video } from '@/types/videos';
+import { api } from '@/utils/api';
+import type { User, Video } from '@/types/videos';
 import type { Thumbnail } from '@/utils/api';
 
 type LoadingState = 'loading' | 'success' | 'error' | 'idle';
@@ -21,8 +20,8 @@ export function useAllVideos() {
     queryKey: ['videos&thumbnails'],
     queryFn: async (): Promise<GetAllVideosResponse> => {
       const [videosResponse, thumbnailsResponse] = await Promise.all([
-        axios.get<Video[]>(`${getEnv().API_BASE_URL}/videos`),
-        axios.get<Thumbnail[]>(`${getEnv().API_BASE_URL}/videos/thumbnails`)
+        api.get<Video[]>('/videos'),
+        api.get<Thumbnail[]>('/videos/thumbnails')
       ]);
       return { videos: videosResponse.data, thumbnails: thumbnailsResponse.data };
     }
@@ -41,14 +40,57 @@ export function useAllVideos() {
   return { videos: data?.videos ?? [], thumbnails: data?.thumbnails ?? [], message, loading };
 }
 
+type ChannelDataResponse = {
+  user: User;
+  videos: Video[];
+  thumbnails: Thumbnail[];
+};
+
+export function useChannelData(userId: string) {
+  const { data, isLoading, isError, isSuccess, error } = useQuery({
+    queryKey: ['channelData', userId],
+    queryFn: async (): Promise<ChannelDataResponse> => {
+      const [userResponse, videosResponse, thumbnailsResponse] = await Promise.all([
+        api.get<User>(`/user/byId/${userId}`),
+        api.get<Video[]>('/videos'),
+        api.get<Thumbnail[]>('/videos/thumbnails')
+      ]);
+      // Filter videos by this user
+      const userVideos = videosResponse.data.filter((video) => String(video.userId) === String(userId));
+      const videoIds = new Set(userVideos.map((video) => String(video.id)));
+      const thumbnails = thumbnailsResponse.data.filter((thumbnail) => videoIds.has(String(thumbnail.id)));
+      return { user: userResponse.data, videos: userVideos, thumbnails };
+    },
+    enabled: !!userId
+  });
+
+  const loading: LoadingState = isLoading
+    ? 'loading'
+    : isError
+      ? 'error'
+      : isSuccess
+        ? 'success'
+        : 'idle';
+
+  const message = isError ? 'Error fetching channel data: ' + error.message : isLoading ? 'Loading...' : '';
+
+  return {
+    user: data?.user ?? null,
+    videos: data?.videos ?? [],
+    thumbnails: data?.thumbnails ?? [],
+    message,
+    loading
+  };
+}
+
 export function useSearchVideos(query: string) {
   const trimmedQuery = query.trim();
   const { data, isLoading, isError, isSuccess, error } = useQuery({
     queryKey: ['searchVideos', trimmedQuery],
     queryFn: async (): Promise<SearchVideosResponse> => {
       const [videosResponse, thumbnailsResponse] = await Promise.all([
-        axios.get<Video[]>(`${getEnv().API_BASE_URL}/videos/search?q=${encodeURIComponent(trimmedQuery)}`),
-        axios.get<Thumbnail[]>(`${getEnv().API_BASE_URL}/videos/thumbnails`)
+        api.get<Video[]>(`/videos/search?q=${encodeURIComponent(trimmedQuery)}`),
+        api.get<Thumbnail[]>('/videos/thumbnails')
       ]);
       const videos = videosResponse.data;
       const thumbnailIds = new Set(videos.map((video) => String(video.id)));
