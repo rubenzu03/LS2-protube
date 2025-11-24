@@ -8,6 +8,8 @@ import com.tecnocampus.LS2.protube_back.persistence.UserRepository;
 import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.CommentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +22,8 @@ public class CommentService {
     public final VideoRepository videoRepository;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, UserRepository userRepository, VideoRepository videoRepository) {
+    public CommentService(CommentRepository commentRepository, UserRepository userRepository,
+            VideoRepository videoRepository) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.videoRepository = videoRepository;
@@ -38,9 +41,39 @@ public class CommentService {
                 .orElse(null);
     }
 
+    public List<CommentDTO> getCommentsByVideoId(Long videoId) {
+        Video video = videoRepository.findById(videoId).orElse(null);
+        if (video == null) {
+            return List.of();
+        }
+        return commentRepository.findByVideo(video).stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
     public CommentDTO createComment(CommentDTO dto) {
-        Comment comment = toDomain(dto);
-        return getCommentDTO(dto, comment);
+        // Always take the user from the authenticated principal, never from the client
+        // payload
+        Comment comment = new Comment();
+        comment.setContent(dto.content());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()
+                && authentication.getPrincipal() != null
+                && !"anonymousUser".equals(authentication.getPrincipal())) {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username);
+            if (user != null) {
+                comment.setUser(user);
+            }
+        }
+
+        if (dto.videoId() != null) {
+            comment.setVideo(videoRepository.getReferenceById(dto.videoId()));
+        }
+
+        Comment saved = commentRepository.save(comment);
+        return toDTO(saved);
     }
 
     public CommentDTO deleteComment(Long id) {
@@ -83,8 +116,8 @@ public class CommentService {
                 comment.getId(),
                 comment.getContent(),
                 comment.getUser() != null ? comment.getUser().getId() : null,
-                comment.getVideo() != null ? comment.getVideo().getId() : null
-        );
+                comment.getVideo() != null ? comment.getVideo().getId() : null,
+                comment.getUser() != null ? comment.getUser().getUsername() : null);
     }
 
     private Comment toDomain(CommentDTO commentDTO) {

@@ -2,6 +2,7 @@ package com.tecnocampus.LS2.protube_back.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,17 +32,18 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/auth/**",
+                        // open auth endpoints
+                        .requestMatchers("/auth/**").permitAll()
+                        // public read-only API
+                        .requestMatchers(HttpMethod.GET,
                                 "/api/videos/**",
-                                "/api/tags/**",
-                                "/api/category/**",
                                 "/api/comments/**",
-                                "/api/user/**",
-                                "/api/hello"
-                        ).permitAll()
-                        .anyRequest().authenticated()
-                )
+                                "/api/category/**",
+                                "/api/tags/**",
+                                "/api/hello")
+                        .permitAll()
+                        // everything else requires authentication (e.g. POST/PUT/DELETE)
+                        .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
