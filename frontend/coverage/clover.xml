@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1764004580067" clover="3.2.0">
-  <project timestamp="1764004580067" name="All files">
-    <metrics statements="556" coveredstatements="170" conditionals="354" coveredconditionals="45" methods="134" coveredmethods="26" elements="1044" coveredelements="241" complexity="0" loc="556" ncloc="556" packages="9" files="25" classes="25"/>
+<coverage generated="1764005603113" clover="3.2.0">
+  <project timestamp="1764005603113" name="All files">
+    <metrics statements="556" coveredstatements="150" conditionals="354" coveredconditionals="42" methods="134" coveredmethods="23" elements="1044" coveredelements="215" complexity="0" loc="556" ncloc="556" packages="9" files="25" classes="25"/>
     <package name="src">
       <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
       <file name="App.tsx" path="/Users/ruben/Desktop/Github/LS2-protube/frontend/src/App.tsx">
@@ -608,37 +608,37 @@
       </file>
     </package>
     <package name="src.utils">
-      <metrics statements="44" coveredstatements="20" conditionals="6" coveredconditionals="3" methods="12" coveredmethods="3"/>
+      <metrics statements="44" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="12" coveredmethods="0"/>
       <file name="api.ts" path="/Users/ruben/Desktop/Github/LS2-protube/frontend/src/utils/api.ts">
-        <metrics statements="28" coveredstatements="20" conditionals="4" coveredconditionals="3" methods="9" coveredmethods="3"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="5" count="1" type="stmt"/>
-        <line num="7" count="1" type="stmt"/>
-        <line num="11" count="1" type="stmt"/>
-        <line num="13" count="1" type="stmt"/>
-        <line num="14" count="2" type="cond" truecount="1" falsecount="0"/>
-        <line num="15" count="2" type="stmt"/>
-        <line num="16" count="2" type="cond" truecount="1" falsecount="0"/>
-        <line num="17" count="1" type="cond" truecount="0" falsecount="1"/>
+        <metrics statements="28" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="9" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
+        <line num="2" count="0" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="14" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="16" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="17" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="18" count="0" type="stmt"/>
-        <line num="20" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="21" count="1" type="stmt"/>
-        <line num="25" count="2" type="stmt"/>
-        <line num="28" count="1" type="stmt"/>
+        <line num="20" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="25" count="0" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
         <line num="29" count="0" type="stmt"/>
         <line num="30" count="0" type="stmt"/>
-        <line num="33" count="1" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
         <line num="34" count="0" type="stmt"/>
         <line num="35" count="0" type="stmt"/>
         <line num="36" count="0" type="stmt"/>
-        <line num="44" count="1" type="stmt"/>
+        <line num="44" count="0" type="stmt"/>
         <line num="45" count="0" type="stmt"/>
         <line num="46" count="0" type="stmt"/>
-        <line num="49" count="1" type="stmt"/>
-        <line num="50" count="2" type="stmt"/>
-        <line num="53" count="1" type="stmt"/>
-        <line num="54" count="2" type="stmt"/>
+        <line num="49" count="0" type="stmt"/>
+        <line num="50" count="0" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="54" count="0" type="stmt"/>
       </file>
       <file name="meta.ts" path="/Users/ruben/Desktop/Github/LS2-protube/frontend/src/utils/meta.ts">
         <metrics statements="16" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="3" coveredmethods="0"/>
