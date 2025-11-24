@@ -19,6 +19,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
+    private String password;
     @OneToMany(mappedBy = "user")
     private List<Video> videos;
     @OneToMany(mappedBy = "user")
@@ -26,13 +27,17 @@ public class User {
 
     public User() {}
 
+    // Constructor used by tests
     public User(Long id, String username) {
         this.id = id;
         this.username = username;
     }
 
+
+
     public User(UserDTO userDTO) {
         this.username = userDTO.username();
+        this.password = userDTO.password();
     }
 
     public void updateUser(String username) {

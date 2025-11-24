@@ -9,8 +9,10 @@ DROP TABLE IF EXISTS users;
 
 -- Create Users table
 CREATE TABLE users (
-    id BIGINT PRIMARY KEY,
-    username VARCHAR(255) NOT NULL
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    authId VARCHAR(255),
+    password VARCHAR(255)
 );
 
 -- Create Categories table

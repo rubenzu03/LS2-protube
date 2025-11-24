@@ -2,9 +2,11 @@ package com.tecnocampus.LS2.protube_back.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.persistence.dto.CategoryDTO;
+import com.tecnocampus.LS2.protube_back.security.JwtAuthenticationFilter;
 import com.tecnocampus.LS2.protube_back.services.CategoryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CategoryController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class CategoryControllerTests {
 
     @Autowired
@@ -33,6 +36,9 @@ public class CategoryControllerTests {
 
     @MockBean
     private CategoryService categoryService;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Test
     void getCategories_returnsList() throws Exception {
@@ -93,4 +99,3 @@ public class CategoryControllerTests {
                 .andExpect(jsonPath("$.name").value("updated"));
     }
 }
-
