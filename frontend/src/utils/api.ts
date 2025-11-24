@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getEnv } from './env';
+import { getEnv } from './Env';
 import type { Video } from '@/types/videos';
 
 const { API_BASE_URL } = getEnv();
