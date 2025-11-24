@@ -4,6 +4,7 @@ import { Home } from '@/components/pages/home';
 import { ThemeProvider } from './components/theme-provider';
 import { VideoPage } from './components/pages/video-page';
 import { SearchPage } from './components/pages/search-page';
+import { AuthPage } from '@/components/pages/auth';
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/video/:id" element={<VideoPage />} />
+            <Route path="/auth" element={<AuthPage />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
