@@ -28,6 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 public class CommentControllerTests {
 
+    //TODO:
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -42,8 +44,8 @@ public class CommentControllerTests {
 
     @Test
     void getComments_returnsList() throws Exception {
-        CommentDTO c1 = new CommentDTO(1L, "hello", 11L, 21L);
-        CommentDTO c2 = new CommentDTO(2L, "world", 12L, 22L);
+        CommentDTO c1 = new CommentDTO(1L, "hello", 11L, 21L,"test");
+        CommentDTO c2 = new CommentDTO(2L, "world", 12L, 22L,"test2");
         given(commentService.getComments()).willReturn(List.of(c1, c2));
 
         mockMvc.perform(get("/api/comments"))
@@ -54,7 +56,7 @@ public class CommentControllerTests {
 
     @Test
     void getCommentById_returnsComment() throws Exception {
-        CommentDTO c = new CommentDTO(5L, "a comment", 2L, 3L);
+        CommentDTO c = new CommentDTO(5L, "a comment", 2L, 3L,"testUser");
         when(commentService.getCommentById(5L)).thenReturn(c);
 
         mockMvc.perform(get("/api/comments/5"))
@@ -67,8 +69,8 @@ public class CommentControllerTests {
 
     @Test
     void createComment_returnsCreatedWithBody() throws Exception {
-        CommentDTO input = new CommentDTO(null, "new comment", 7L, 8L);
-        CommentDTO created = new CommentDTO(10L, "new comment", 7L, 8L);
+        CommentDTO input = new CommentDTO(null, "new comment", 7L, 8L,"test");
+        CommentDTO created = new CommentDTO(10L, "new comment", 7L, 8L,"test");
         when(commentService.createComment(any())).thenReturn(created);
 
         mockMvc.perform(post("/api/comments")
@@ -83,7 +85,7 @@ public class CommentControllerTests {
 
     @Test
     void deleteComment_returnsNoContent() throws Exception {
-        given(commentService.deleteComment(3L)).willReturn(new CommentDTO(3L, "toDelete", 1L, 1L));
+        given(commentService.deleteComment(3L)).willReturn(new CommentDTO(3L, "toDelete", 1L, 1L,"test"));
 
         mockMvc.perform(delete("/api/comments/3"))
                 .andExpect(status().isNoContent());
@@ -91,8 +93,8 @@ public class CommentControllerTests {
 
     @Test
     void updateComment_returnsUpdated() throws Exception {
-        CommentDTO input = new CommentDTO(null, "updated", 5L, 6L);
-        CommentDTO updated = new CommentDTO(4L, "updated", 5L, 6L);
+        CommentDTO input = new CommentDTO(null, "updated", 5L, 6L,"test");
+        CommentDTO updated = new CommentDTO(4L, "updated", 5L, 6L,"test");
         when(commentService.updateComment(eq(4L), any())).thenReturn(updated);
 
         mockMvc.perform(put("/api/comments/4")
