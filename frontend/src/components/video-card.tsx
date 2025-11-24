@@ -64,15 +64,25 @@ export function VideoCard({ video, thumbnail }: Props) {
       </div>
 
       <div className="flex gap-3 p-3">
-        <div className="mt-0.5 h-9 w-9 overflow-hidden rounded-full bg-muted">
+        <Link
+          to={`/channel/${video.userId}`}
+          className="mt-0.5 h-9 w-9 overflow-hidden rounded-full bg-muted hover:opacity-80 transition-opacity"
+          onClick={(e) => e.stopPropagation()}
+        >
           <img src="/abstract-channel-avatar.png" alt={channelLabel} className="h-full w-full object-cover" />
-        </div>
+        </Link>
         <div className="min-w-0 flex-1">
           <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug group-hover:text-foreground/90">
             {video.title}
           </h3>
           <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-            <span className="truncate hover:text-foreground/80">{channelLabel}</span>
+            <Link
+              to={`/channel/${video.userId}`}
+              className="truncate hover:text-foreground/80 transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {channelLabel}
+            </Link>
             <CheckBadgeIcon className="h-3.5 w-3.5 text-muted-foreground/70" />
           </div>
         </div>
