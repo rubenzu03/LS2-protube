@@ -5,6 +5,7 @@ import { ThemeProvider } from './components/theme-provider';
 import { VideoPage } from './components/pages/video-page';
 import { SearchPage } from './components/pages/search-page';
 import { AuthPage } from '@/components/pages/auth';
+import { ChannelPage } from './components/pages/channel-page';
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ function App() {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/video/:id" element={<VideoPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/channel/:id" element={<ChannelPage />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

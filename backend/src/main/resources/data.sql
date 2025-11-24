@@ -1,4 +1,4 @@
--- Drop tables if they exist (in correct order due to foreign key constraints)
+/*-- Drop tables if they exist (in correct order due to foreign key constraints)
 DROP TABLE IF EXISTS videos_tags;
 DROP TABLE IF EXISTS videos_categories;
 DROP TABLE IF EXISTS comments;
@@ -160,3 +160,4 @@ INSERT INTO videos (id, title, width, height, duration, description, filename, u
 INSERT INTO videos (id, title, width, height, duration, description, filename, user_id) VALUES
     (106, 'The Midnight - Gloria', 1920, 1080, 30.0, 'The Midnight\'s best fucking song', '108.mp4', 11);
 
+*/
