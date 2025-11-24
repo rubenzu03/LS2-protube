@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "build:prod": "tsc -b && vite build --mode production",
     "lint": "eslint .",
-    "test": "",
+    "test": "jest --collectCoverage=true --coverage",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -20,6 +20,7 @@
     "axios": "1.12.2",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
+    "jest": "^30.2.0",
     "lucide-react": "0.544.0",
     "react": "19.1.1",
     "react-dom": "19.1.1",
