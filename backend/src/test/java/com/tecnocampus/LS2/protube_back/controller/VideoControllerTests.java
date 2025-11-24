@@ -53,7 +53,6 @@ public class VideoControllerTests {
 
     @BeforeEach
     void setup() {
-        // ensure controller has the temp directory as storeDir (in case property not picked)
         VideoController controller = webApplicationContext.getBean(VideoController.class);
         String tmp = System.getProperty("java.io.tmpdir");
         ReflectionTestUtils.setField(controller, "storeDir", tmp);
@@ -85,7 +84,6 @@ public class VideoControllerTests {
     @Test
     void createVideo_returnsCreatedWithBody() throws Exception {
         VideoDTO v = new VideoDTO(null, "New", 100f, 100f, 1f, "desc", "new.mp4", null, null, null, null);
-        // controller returns the same DTO body, it calls service but responds with the passed dto
         when(videoService.createVideo(any())).thenReturn(new VideoDTO(10L, "New", 100f, 100f, 1f, "desc", "new.mp4", null, null, null, null));
 
         mockMvc.perform(post("/api/videos")
@@ -121,7 +119,6 @@ public class VideoControllerTests {
 
     @Test
     void streamVideo_returnsFile_whenExists() throws Exception {
-        // create temp file in the controller's store dir
         String tmp = System.getProperty("java.io.tmpdir");
         File f = File.createTempFile("videotest-", ".mp4", new File(tmp));
         f.deleteOnExit();

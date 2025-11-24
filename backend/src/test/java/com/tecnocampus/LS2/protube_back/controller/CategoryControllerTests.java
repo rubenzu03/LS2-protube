@@ -65,7 +65,6 @@ public class CategoryControllerTests {
 
     @Test
     void createCategory_returnsCreatedWithBody() throws Exception {
-        // Note: controller echoes back the request body (not the service return)
         CategoryDTO input = new CategoryDTO(null, "newcat");
         CategoryDTO serviceReturn = new CategoryDTO(10L, "newcat");
         when(categoryService.createCategory(any())).thenReturn(serviceReturn);
@@ -87,7 +86,6 @@ public class CategoryControllerTests {
 
     @Test
     void updateCategory_returnsUpdatedBody() throws Exception {
-        // controller returns the request body for update
         CategoryDTO input = new CategoryDTO(null, "updated");
         CategoryDTO serviceReturn = new CategoryDTO(4L, "updated");
         when(categoryService.updateCategory(eq(4L), any())).thenReturn(serviceReturn);
