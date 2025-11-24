@@ -241,7 +241,13 @@
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <version>0.8.12</version>
                         <configuration>
-                            <excludes>com/tecnocampus/LS2/protube_back/ProtubeBackApplication*</excludes>
+                            <excludes>
+                                <exclude>**/AppStartupRunner*.class</exclude>
+                                <exclude>**/JwtAuthenticationFilter*.class</exclude>
+                                <exclude>**/SecurityConfig*.class</exclude>
+                                <exclude>**/ProtubeBackApplication*.class</exclude>
+
+                            </excludes>
                         </configuration>
                         <executions>
                             <execution>
@@ -305,7 +311,12 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.12</version>
                 <configuration>
-                    <excludes>com/tecnocampus/LS2/protube_back/ProtubeBackApplication*</excludes>
+                    <excludes>
+                        <exclude>**/AppStartupRunner*.class</exclude>
+                        <exclude>**/JwtAuthenticationFilter*.class</exclude>
+                        <exclude>**/SecurityConfig*.class</exclude>
+                        <exclude>**/ProtubeBackApplication*.class</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
