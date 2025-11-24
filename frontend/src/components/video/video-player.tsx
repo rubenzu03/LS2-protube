@@ -11,7 +11,7 @@ type Props = {
 const MUTED_KEY = 'protube_muted';
 const VOLUME_KEY = 'protube_volume';
 
-export function VideoPlayer({ src, isLoading, error, poster, children }: Props) {
+export function VideoPlayer({ src, isLoading, error, poster }: Props) {
   const [isReady, setIsReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const getStoredVolume = () => {
