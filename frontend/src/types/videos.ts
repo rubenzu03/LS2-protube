@@ -18,4 +18,3 @@ export type User = {
   videoId?: string;
   commentId?: string;
 };
-
