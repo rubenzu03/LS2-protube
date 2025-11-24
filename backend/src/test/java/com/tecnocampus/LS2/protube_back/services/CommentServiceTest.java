@@ -88,7 +88,7 @@ class CommentServiceTest {
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         VideoRepository videoRepository = Mockito.mock(VideoRepository.class);
 
-        CommentDTO input = new CommentDTO(null, "new", 5L, 6L);
+        CommentDTO input = new CommentDTO(null, "new", 5L, 6L,"test");
 
         when(userRepository.getReferenceById(5L)).thenReturn(new User(5L, "u"));
         Video vid = new Video(); vid.setId(6L);
@@ -118,7 +118,7 @@ class CommentServiceTest {
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         VideoRepository videoRepository = Mockito.mock(VideoRepository.class);
 
-        CommentDTO input = new CommentDTO(null, "noRefs", null, null);
+        CommentDTO input = new CommentDTO(null, "noRefs", null, null,"test");
 
         when(commentRepository.save(any(Comment.class))).thenAnswer(invocation -> {
             Comment arg = invocation.getArgument(0);
@@ -180,7 +180,7 @@ class CommentServiceTest {
 
         CommentService service = new CommentService(commentRepository, userRepository, videoRepository);
 
-        CommentDTO dto = new CommentDTO(null, "x", null, null);
+        CommentDTO dto = new CommentDTO(null, "x", null, null,"test");
         assertNull(service.updateComment(99L, dto));
     }
 
@@ -207,7 +207,7 @@ class CommentServiceTest {
 
         CommentService service = new CommentService(commentRepository, userRepository, videoRepository);
 
-        CommentDTO dto = new CommentDTO(null, "updated", 7L, 8L);
+        CommentDTO dto = new CommentDTO(null, "updated", 7L, 8L,"test");
         CommentDTO out = service.updateComment(10L, dto);
 
         assertNotNull(out);
@@ -235,7 +235,7 @@ class CommentServiceTest {
 
         CommentService service = new CommentService(commentRepository, userRepository, videoRepository);
 
-        CommentDTO dto = new CommentDTO(null, "onlyContent", null, null);
+        CommentDTO dto = new CommentDTO(null, "onlyContent", null, null,"test");
         CommentDTO out = service.updateComment(11L, dto);
 
         assertNotNull(out);
