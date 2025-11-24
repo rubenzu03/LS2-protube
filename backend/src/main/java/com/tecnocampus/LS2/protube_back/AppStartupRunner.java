@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back;
 
+import com.tecnocampus.LS2.protube_back.services.VideoImportService;
 import com.tecnocampus.LS2.protube_back.services.VideoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,9 @@ public class AppStartupRunner implements ApplicationRunner {
 
     @Autowired
     VideoService videoService;
+
+    @Autowired
+    VideoImportService videoImportService;
 
     // Inject properties directly using @Value annotations
     @Value("${pro_tube.store.dir}")
@@ -49,6 +53,7 @@ public class AppStartupRunner implements ApplicationRunner {
             LOG.info("Loading initial data from: {}", getRootPath());
             // Add your initial data loading logic here
             // You can use videoService here to load videos from the store directory
+            videoImportService.importVideosFromJsonFiles(getRootPath());
         }
     }
 }

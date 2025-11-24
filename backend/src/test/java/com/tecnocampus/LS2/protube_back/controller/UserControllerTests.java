@@ -2,9 +2,11 @@ package com.tecnocampus.LS2.protube_back.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.persistence.dto.UserDTO;
+import com.tecnocampus.LS2.protube_back.security.JwtAuthenticationFilter;
 import com.tecnocampus.LS2.protube_back.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class UserControllerTests {
 
     @Autowired
@@ -34,10 +37,14 @@ public class UserControllerTests {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Test
     void getUsers_returnsList() throws Exception {
-        UserDTO u1 = new UserDTO(1L, "alice", null, null);
-        UserDTO u2 = new UserDTO(2L, "bob", null, null);
+        // UserDTO(username, id, password, videoId, commentId)
+        UserDTO u1 = new UserDTO("alice", 1L, null, null, null);
+        UserDTO u2 = new UserDTO("bob", 2L, null, null, null);
         given(userService.getUsers()).willReturn(List.of(u1, u2));
 
         mockMvc.perform(get("/api/user"))
@@ -48,10 +55,10 @@ public class UserControllerTests {
 
     @Test
     void getUserById_returnsUser() throws Exception {
-        UserDTO u = new UserDTO(5L, "charlie", null, null);
+        UserDTO u = new UserDTO("charlie", 5L, null, null, null);
         when(userService.getUserById(5L)).thenReturn(u);
 
-        mockMvc.perform(get("/api/user/5"))
+        mockMvc.perform(get("/api/user/byId/5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(5))
                 .andExpect(jsonPath("$.username").value("charlie"));
@@ -59,11 +66,11 @@ public class UserControllerTests {
 
     @Test
     void createUser_returnsCreatedWithBody() throws Exception {
-        UserDTO input = new UserDTO(null, "newuser", null, null);
-        UserDTO created = new UserDTO(10L, "newuser", null, null);
+        UserDTO input = new UserDTO("newuser", null, null, null, null);
+        UserDTO created = new UserDTO("newuser", 10L, null, null, null);
         when(userService.createUser(any())).thenReturn(created);
 
-        mockMvc.perform(post("/api/user")
+        mockMvc.perform(post("/api/user/register")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(input)))
                 .andExpect(status().isCreated())
@@ -73,7 +80,7 @@ public class UserControllerTests {
 
     @Test
     void deleteUser_returnsNoContent() throws Exception {
-        given(userService.deleteUser(3L)).willReturn(new UserDTO(3L, "toDelete", null, null));
+        given(userService.deleteUser(3L)).willReturn(new UserDTO("toDelete", 3L, null, null, null));
 
         mockMvc.perform(delete("/api/user/3"))
                 .andExpect(status().isNoContent());
@@ -81,8 +88,8 @@ public class UserControllerTests {
 
     @Test
     void updateUser_returnsUpdated() throws Exception {
-        UserDTO input = new UserDTO(null, "updated", null, null);
-        UserDTO updated = new UserDTO(4L, "updated", null, null);
+        UserDTO input = new UserDTO("updated", null, null, null, null);
+        UserDTO updated = new UserDTO("updated", 4L, null, null, null);
         when(userService.updateUser(eq(4L), any())).thenReturn(updated);
 
         mockMvc.perform(put("/api/user/4")
