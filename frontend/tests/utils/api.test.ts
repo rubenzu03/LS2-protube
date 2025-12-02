@@ -1,4 +1,3 @@
-import { api, getVideo, getVideoPageData, getThumbnails, getThumbnail, getVideoStreamUrl } from '@/utils/api';
 import type { Video } from '@/types/videos';
 
 jest.mock('@/utils/Env', () => ({
@@ -7,6 +6,8 @@ jest.mock('@/utils/Env', () => ({
     API_DOMAIN: 'http://localhost:8080'
   })
 }));
+
+import { api, getVideo, getVideoPageData, getThumbnails, getThumbnail, getVideoStreamUrl } from '@/utils/api';
 
 describe('API Utils', () => {
   beforeEach(() => {
@@ -56,7 +57,7 @@ describe('API Utils', () => {
       const result = await getVideoPageData('1');
 
       expect(result.video).toEqual(mockVideo);
-      expect(result.thumbnail).toBe('http://localhost:8080/videos/thumbnail/1');
+      expect(result.thumbnail).toBe('http://localhost:8080/api/videos/thumbnail/1');
       expect(api.get).toHaveBeenCalledWith('/videos/1');
     });
   });

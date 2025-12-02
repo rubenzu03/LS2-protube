@@ -1,4 +1,4 @@
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router';
 import { UserButton } from '@/components/user-button';
 import { api } from '@/utils/api';
@@ -32,7 +32,7 @@ describe('UserButton', () => {
     expect(screen.getByRole('button', { name: /user menu/i })).toBeInTheDocument();
   });
 
-  it('sets authorization header when token is found on mount', () => {
+  it('sets authorization header when token is found on mount', async () => {
     localStorage.setItem('protube_token', 'test-token');
 
     render(
@@ -41,10 +41,12 @@ describe('UserButton', () => {
       </BrowserRouter>
     );
 
-    expect(api.defaults.headers.common.Authorization).toBe('Bearer test-token');
+    await waitFor(() => {
+      expect(api.defaults.headers.common.Authorization).toBe('Bearer test-token');
+    });
   });
 
-  it('handles storage event when token is added', () => {
+  it('handles storage event when token is added', async () => {
     render(
       <BrowserRouter>
         <UserButton />
@@ -59,10 +61,12 @@ describe('UserButton', () => {
       window.dispatchEvent(storageEvent);
     });
 
-    expect(api.defaults.headers.common.Authorization).toBe('Bearer new-token');
+    await waitFor(() => {
+      expect(api.defaults.headers.common.Authorization).toBe('Bearer new-token');
+    });
   });
 
-  it('handles storage event when token is removed', () => {
+  it('handles storage event when token is removed', async () => {
     localStorage.setItem('protube_token', 'test-token');
 
     render(
@@ -79,16 +83,20 @@ describe('UserButton', () => {
       window.dispatchEvent(storageEvent);
     });
 
-    expect(api.defaults.headers.common.Authorization).toBeUndefined();
+    await waitFor(() => {
+      expect(api.defaults.headers.common.Authorization).toBeUndefined();
+    });
   });
 
-  it('removes authorization header when there is no token', () => {
+  it('removes authorization header when there is no token', async () => {
     render(
       <BrowserRouter>
         <UserButton />
       </BrowserRouter>
     );
 
-    expect(api.defaults.headers.common.Authorization).toBeUndefined();
+    await waitFor(() => {
+      expect(api.defaults.headers.common.Authorization).toBeUndefined();
+    });
   });
 });
