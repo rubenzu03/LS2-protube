@@ -529,4 +529,3 @@ describe('DropdownMenuPortal', () => {
     expect(screen.getByText('Portal Item')).toBeInTheDocument();
   });
 });
-

@@ -387,8 +387,8 @@ describe('AuthPage', () => {
   });
 
   it('disables submit button while submitting', async () => {
-    let resolvePromise: (value: any) => void;
-    const promise = new Promise((resolve) => {
+    let resolvePromise: (value: { data: { token: string } }) => void;
+    const promise = new Promise<{ data: { token: string } }>((resolve) => {
       resolvePromise = resolve;
     });
     (axios.post as jest.Mock).mockReturnValue(promise);
@@ -417,8 +417,8 @@ describe('AuthPage', () => {
   });
 
   it('shows correct button text for sign up mode', async () => {
-    let resolvePromise: (value: any) => void;
-    const promise = new Promise((resolve) => {
+    let resolvePromise: (value: { data: { token: string } }) => void;
+    const promise = new Promise<{ data: { token: string } }>((resolve) => {
       resolvePromise = resolve;
     });
     (axios.post as jest.Mock).mockReturnValue(promise);
@@ -480,4 +480,3 @@ describe('AuthPage', () => {
     });
   });
 });
-

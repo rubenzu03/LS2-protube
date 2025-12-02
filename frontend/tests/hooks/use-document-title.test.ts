@@ -33,7 +33,7 @@ describe('useDocumentTitle', () => {
 
   it('updates title when title prop changes', () => {
     const { rerender } = renderHook(({ title }) => useDocumentTitle(title), {
-      initialProps: { title: 'First Title' },
+      initialProps: { title: 'First Title' }
     });
 
     expect(document.title).toBe('First Title');
@@ -42,4 +42,3 @@ describe('useDocumentTitle', () => {
     expect(document.title).toBe('Second Title');
   });
 });
-

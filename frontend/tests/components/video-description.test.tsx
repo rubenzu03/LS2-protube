@@ -23,4 +23,3 @@ describe('VideoDescription', () => {
     expect(screen.queryByText('This is a test video description')).not.toBeInTheDocument();
   });
 });
-

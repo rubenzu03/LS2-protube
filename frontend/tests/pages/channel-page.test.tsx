@@ -138,4 +138,3 @@ describe('ChannelPage', () => {
     expect(screen.getByText('2 videos')).toBeInTheDocument();
   });
 });
-

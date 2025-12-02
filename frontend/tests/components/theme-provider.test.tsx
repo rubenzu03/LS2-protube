@@ -6,7 +6,7 @@ describe('ThemeProvider', () => {
     localStorage.clear();
     jest.clearAllMocks();
     document.documentElement.classList.remove('light', 'dark');
-    
+
     // Mock matchMedia properly
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
@@ -18,8 +18,8 @@ describe('ThemeProvider', () => {
         removeListener: jest.fn(),
         addEventListener: jest.fn(),
         removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-      })),
+        dispatchEvent: jest.fn()
+      }))
     });
   });
 
@@ -115,8 +115,8 @@ describe('ThemeProvider', () => {
         removeListener: jest.fn(),
         addEventListener: jest.fn(),
         removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-      })),
+        dispatchEvent: jest.fn()
+      }))
     });
 
     render(
@@ -140,8 +140,8 @@ describe('ThemeProvider', () => {
         removeListener: jest.fn(),
         addEventListener: jest.fn(),
         removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-      })),
+        dispatchEvent: jest.fn()
+      }))
     });
 
     render(
@@ -255,15 +255,15 @@ describe('useTheme', () => {
     // This test verifies that useTheme throws an error when used outside ThemeProvider
     // In React 18, errors are caught by error boundaries, so we verify the hook
     // implementation by checking that it throws when context is undefined
-    
+
     // We can't easily test this in React 18 without error boundaries,
     // but the implementation ensures it throws, which is verified by the fact
     // that the hook works correctly when used within ThemeProvider (tested above)
     // This is a structural test to ensure the error handling exists in the code
-    
+
     // Verify useTheme exists and is a function
     expect(typeof useTheme).toBe('function');
-    
+
     // The actual error throwing is tested implicitly - if it didn't throw,
     // the hook would return undefined context which would break other tests
   });
@@ -289,4 +289,3 @@ describe('useTheme', () => {
     expect(screen.getByTestId('has-set-theme')).toHaveTextContent('yes');
   });
 });
-

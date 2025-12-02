@@ -11,9 +11,9 @@ const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        retry: false,
-      },
-    },
+        retry: false
+      }
+    }
   });
   return ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
@@ -37,12 +37,12 @@ describe('video-hooks', () => {
           uploadDate: '2024-01-01',
           views: 100,
           likes: 10,
-          isLiked: false,
-        },
+          isLiked: false
+        }
       ];
 
       const mockThumbnails: Thumbnail[] = [
-        { id: '1', filename: 'thumb1.jpg' },
+        { id: '1', filename: 'thumb1.jpg' }
       ];
 
       (api.get as jest.Mock)
@@ -50,7 +50,7 @@ describe('video-hooks', () => {
         .mockResolvedValueOnce({ data: mockThumbnails });
 
       const { result } = renderHook(() => useAllVideos(), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       expect(result.current.loading).toBe('loading');
@@ -69,7 +69,7 @@ describe('video-hooks', () => {
       (api.get as jest.Mock).mockRejectedValueOnce(new Error(errorMessage));
 
       const { result } = renderHook(() => useAllVideos(), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       await waitFor(() => {
@@ -87,7 +87,7 @@ describe('video-hooks', () => {
       const mockUser: User = {
         id: 'user1',
         username: 'testuser',
-        email: 'test@example.com',
+        email: 'test@example.com'
       };
 
       const mockVideos: Video[] = [
@@ -101,7 +101,7 @@ describe('video-hooks', () => {
           uploadDate: '2024-01-01',
           views: 100,
           likes: 10,
-          isLiked: false,
+          isLiked: false
         },
         {
           id: '2',
@@ -113,13 +113,13 @@ describe('video-hooks', () => {
           uploadDate: '2024-01-02',
           views: 200,
           likes: 20,
-          isLiked: false,
-        },
+          isLiked: false
+        }
       ];
 
       const mockThumbnails: Thumbnail[] = [
         { id: '1', filename: 'thumb1.jpg' },
-        { id: '2', filename: 'thumb2.jpg' },
+        { id: '2', filename: 'thumb2.jpg' }
       ];
 
       (api.get as jest.Mock)
@@ -128,7 +128,7 @@ describe('video-hooks', () => {
         .mockResolvedValueOnce({ data: mockThumbnails });
 
       const { result } = renderHook(() => useChannelData('user1'), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       await waitFor(() => {
@@ -145,7 +145,7 @@ describe('video-hooks', () => {
       (api.get as jest.Mock).mockRejectedValueOnce(new Error('Not found'));
 
       const { result } = renderHook(() => useChannelData('user1'), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       await waitFor(() => {
@@ -158,7 +158,7 @@ describe('video-hooks', () => {
 
     it('does not fetch when userId is empty', () => {
       const { result } = renderHook(() => useChannelData(''), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       expect(result.current.loading).toBe('idle');
@@ -178,12 +178,12 @@ describe('video-hooks', () => {
           uploadDate: '2024-01-01',
           views: 100,
           likes: 10,
-          isLiked: false,
-        },
+          isLiked: false
+        }
       ];
 
       const mockThumbnails: Thumbnail[] = [
-        { id: '1', filename: 'thumb1.jpg' },
+        { id: '1', filename: 'thumb1.jpg' }
       ];
 
       (api.get as jest.Mock)
@@ -191,7 +191,7 @@ describe('video-hooks', () => {
         .mockResolvedValueOnce({ data: mockThumbnails });
 
       const { result } = renderHook(() => useSearchVideos('test'), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       await waitFor(() => {
@@ -205,7 +205,7 @@ describe('video-hooks', () => {
 
     it('returns idle state when query is empty', () => {
       const { result } = renderHook(() => useSearchVideos(''), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       expect(result.current.loading).toBe('idle');
@@ -215,7 +215,7 @@ describe('video-hooks', () => {
 
     it('handles whitespace-only query', () => {
       const { result } = renderHook(() => useSearchVideos('   '), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       expect(result.current.loading).toBe('idle');
@@ -226,7 +226,7 @@ describe('video-hooks', () => {
       (api.get as jest.Mock).mockRejectedValueOnce(new Error('Search failed'));
 
       const { result } = renderHook(() => useSearchVideos('test'), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       await waitFor(() => {
@@ -237,4 +237,3 @@ describe('video-hooks', () => {
     });
   });
 });
-

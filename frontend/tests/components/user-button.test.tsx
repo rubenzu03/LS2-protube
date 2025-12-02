@@ -8,11 +8,11 @@ const mockNavigate = jest.fn();
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
   useNavigate: () => mockNavigate,
-  useLocation: () => ({ pathname: '/test', search: '' }),
+  useLocation: () => ({ pathname: '/test', search: '' })
 }));
 
 jest.mock('@/components/mode-toggle', () => ({
-  ModeToggle: () => <div>Mode Toggle</div>,
+  ModeToggle: () => <div>Mode Toggle</div>
 }));
 
 describe('UserButton', () => {
@@ -56,7 +56,7 @@ describe('UserButton', () => {
     act(() => {
       const storageEvent = new StorageEvent('storage', {
         key: 'protube_token',
-        newValue: 'new-token',
+        newValue: 'new-token'
       });
       window.dispatchEvent(storageEvent);
     });
@@ -78,7 +78,7 @@ describe('UserButton', () => {
     act(() => {
       const storageEvent = new StorageEvent('storage', {
         key: 'protube_token',
-        newValue: null,
+        newValue: null
       });
       window.dispatchEvent(storageEvent);
     });

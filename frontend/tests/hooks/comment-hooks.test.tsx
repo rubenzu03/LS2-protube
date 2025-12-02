@@ -10,9 +10,9 @@ const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        retry: false,
-      },
-    },
+        retry: false
+      }
+    }
   });
   return ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
@@ -33,14 +33,14 @@ describe('comment-hooks', () => {
           username: 'user1',
           userId: 'user1',
           videoId: 1,
-          createdAt: '2024-01-01',
-        },
+          createdAt: '2024-01-01'
+        }
       ];
 
       (api.get as jest.Mock).mockResolvedValueOnce({ data: mockComments });
 
       const { result } = renderHook(() => useVideoComments('1'), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       expect(result.current.loading).toBe('loading');
@@ -58,7 +58,7 @@ describe('comment-hooks', () => {
       (api.get as jest.Mock).mockRejectedValueOnce(new Error('Failed to fetch'));
 
       const { result } = renderHook(() => useVideoComments('1'), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       await waitFor(() => {
@@ -71,7 +71,7 @@ describe('comment-hooks', () => {
 
     it('returns idle state when videoId is undefined', () => {
       const { result } = renderHook(() => useVideoComments(undefined), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       expect(result.current.loading).toBe('idle');
@@ -80,7 +80,7 @@ describe('comment-hooks', () => {
 
     it('returns idle state when videoId is empty string', () => {
       const { result } = renderHook(() => useVideoComments(''), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       expect(result.current.loading).toBe('idle');
@@ -96,13 +96,13 @@ describe('comment-hooks', () => {
         username: 'user1',
         userId: 'user1',
         videoId: 1,
-        createdAt: '2024-01-01',
+        createdAt: '2024-01-01'
       };
 
       (api.post as jest.Mock).mockResolvedValueOnce({ data: mockComment });
 
       const { result } = renderHook(() => useCreateComment('1'), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       await waitFor(() => {
@@ -118,13 +118,13 @@ describe('comment-hooks', () => {
       expect(api.post).toHaveBeenCalledWith('/comments', {
         content: 'New comment',
         userId: null,
-        videoId: 1,
+        videoId: 1
       });
     });
 
     it('handles undefined videoId', () => {
       const { result } = renderHook(() => useCreateComment(undefined), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       expect(result.current).toBeDefined();
@@ -134,7 +134,7 @@ describe('comment-hooks', () => {
       (api.post as jest.Mock).mockRejectedValueOnce(new Error('Failed to create'));
 
       const { result } = renderHook(() => useCreateComment('1'), {
-        wrapper: createWrapper(),
+        wrapper: createWrapper()
       });
 
       result.current.mutate({ content: 'New comment', videoId: 1 });

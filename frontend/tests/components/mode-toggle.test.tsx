@@ -14,7 +14,7 @@ describe('ModeToggle', () => {
   it('renders mode toggle button', () => {
     (useTheme as jest.Mock).mockReturnValue({
       theme: 'light',
-      setTheme: mockSetTheme,
+      setTheme: mockSetTheme
     });
 
     render(<ModeToggle />);
@@ -24,7 +24,7 @@ describe('ModeToggle', () => {
   it('toggles from light to dark theme', () => {
     (useTheme as jest.Mock).mockReturnValue({
       theme: 'light',
-      setTheme: mockSetTheme,
+      setTheme: mockSetTheme
     });
 
     render(<ModeToggle />);
@@ -38,7 +38,7 @@ describe('ModeToggle', () => {
   it('toggles from dark to light theme', () => {
     (useTheme as jest.Mock).mockReturnValue({
       theme: 'dark',
-      setTheme: mockSetTheme,
+      setTheme: mockSetTheme
     });
 
     render(<ModeToggle />);
@@ -52,11 +52,10 @@ describe('ModeToggle', () => {
   it('has accessible label', () => {
     (useTheme as jest.Mock).mockReturnValue({
       theme: 'light',
-      setTheme: mockSetTheme,
+      setTheme: mockSetTheme
     });
 
     render(<ModeToggle />);
     expect(screen.getByText('Toggle theme')).toBeInTheDocument();
   });
 });
-

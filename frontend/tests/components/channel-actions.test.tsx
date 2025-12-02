@@ -42,4 +42,3 @@ describe('ChannelActions', () => {
     expect(avatar).toHaveAttribute('src', '/abstract-channel-avatar.png');
   });
 });
-

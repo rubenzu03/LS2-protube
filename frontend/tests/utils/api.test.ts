@@ -1,4 +1,5 @@
 import type { Video } from '@/types/videos';
+import type { AxiosResponse } from 'axios';
 
 jest.mock('@/utils/Env', () => ({
   getEnv: () => ({
@@ -29,7 +30,7 @@ describe('API Utils', () => {
         isLiked: false
       };
 
-      jest.spyOn(api, 'get').mockResolvedValue({ data: mockVideo } as any);
+      jest.spyOn(api, 'get').mockResolvedValue({ data: mockVideo } as AxiosResponse<Video>);
 
       const result = await getVideo('1');
 
@@ -52,7 +53,7 @@ describe('API Utils', () => {
         isLiked: false
       };
 
-      jest.spyOn(api, 'get').mockResolvedValue({ data: mockVideo } as any);
+      jest.spyOn(api, 'get').mockResolvedValue({ data: mockVideo } as AxiosResponse<Video>);
 
       const result = await getVideoPageData('1');
 
@@ -69,7 +70,7 @@ describe('API Utils', () => {
         { id: '2', filename: 'thumb2.jpg' }
       ];
 
-      jest.spyOn(api, 'get').mockResolvedValue({ data: mockThumbnails } as any);
+      jest.spyOn(api, 'get').mockResolvedValue({ data: mockThumbnails } as AxiosResponse<Array<{ id: string; filename: string }>>);
 
       const result = await getThumbnails();
 
@@ -107,7 +108,7 @@ describe('API Utils', () => {
       const mockToken = 'test-token-123';
       localStorage.setItem('protube_token', mockToken);
 
-      const mockGet = jest.spyOn(api, 'get').mockResolvedValue({ data: {} } as any);
+      const mockGet = jest.spyOn(api, 'get').mockResolvedValue({ data: {} } as AxiosResponse<Record<string, never>>);
 
       await api.get('/test');
 
@@ -117,7 +118,7 @@ describe('API Utils', () => {
     it('works without token', async () => {
       localStorage.clear();
 
-      const mockGet = jest.spyOn(api, 'get').mockResolvedValue({ data: {} } as any);
+      const mockGet = jest.spyOn(api, 'get').mockResolvedValue({ data: {} } as AxiosResponse<Record<string, never>>);
 
       await api.get('/test');
 
