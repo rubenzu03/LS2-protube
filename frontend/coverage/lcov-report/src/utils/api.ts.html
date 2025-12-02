@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/36</span>
+                <span class='fraction'>0/33</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/28</span>
+                <span class='fraction'>0/25</span>
             </div>
         
             
@@ -113,12 +113,7 @@
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L51'></a><a href='#L51'>51</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -135,11 +130,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -173,7 +163,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import axios from 'axios';</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import axios, { type InternalAxiosRequestConfig } from 'axios';</span>
 <span class="cstat-no" title="statement not covered" >import { getEnv } from './Env';</span>
 import type { Video } from '@/types/videos';
 &nbsp;
@@ -185,16 +175,11 @@ export const <span class="cstat-no" title="statement not covered" >api = axios.c
 &nbsp;
 const TOKEN_KEY = <span class="cstat-no" title="statement not covered" >'protube_token';</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >api.interceptors.request.use(<span class="fstat-no" title="function not covered" >(c</span>onfig) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >api.interceptors.request.use(<span class="fstat-no" title="function not covered" >(c</span>onfig: InternalAxiosRequestConfig) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (typeof window !== 'undefined') {</span>
     const token = <span class="cstat-no" title="statement not covered" >window.localStorage.getItem(TOKEN_KEY);</span>
 <span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (token) {</span>
-<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (!config.headers) {</span>
-<span class="cstat-no" title="statement not covered" >        config.headers = {} as any;</span>
-      }
-<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (!('Authorization' in config.headers)) {</span>
-<span class="cstat-no" title="statement not covered" >        config.headers.Authorization = `Bearer ${token}`;</span>
-      }
+<span class="cstat-no" title="statement not covered" >      config.headers.Authorization = `Bearer ${token}`;</span>
     }
   }
 <span class="cstat-no" title="statement not covered" >  return config;</span>
@@ -235,7 +220,7 @@ export const <span class="cstat-no" title="statement not covered" >getVideoStrea
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-24T17:33:23.093Z
+                at 2025-12-02T16:59:20.914Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

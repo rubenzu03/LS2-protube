@@ -20,16 +20,32 @@ Object.defineProperty(window, 'matchMedia', {
   }))
 });
 
-// Mock localStorage
+// Mock localStorage with actual storage implementation
+const storage: Record<string, string> = {};
 const localStorageMock: Storage = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn(),
-  length: 0,
-  key: jest.fn()
+  getItem: jest.fn((key: string) => storage[key] || null),
+  setItem: jest.fn((key: string, value: string) => {
+    storage[key] = value;
+  }),
+  removeItem: jest.fn((key: string) => {
+    delete storage[key];
+  }),
+  clear: jest.fn(() => {
+    Object.keys(storage).forEach(key => delete storage[key]);
+  }),
+  get length() {
+    return Object.keys(storage).length;
+  },
+  key: jest.fn((index: number) => {
+    const keys = Object.keys(storage);
+    return keys[index] || null;
+  })
 };
 Object.defineProperty(global, 'localStorage', {
+  value: localStorageMock,
+  writable: true
+});
+Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
   writable: true
 });
