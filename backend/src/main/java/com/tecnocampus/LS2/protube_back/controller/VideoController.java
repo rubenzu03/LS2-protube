@@ -1,5 +1,7 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tecnocampus.LS2.protube_back.domain.Video;
 import com.tecnocampus.LS2.protube_back.persistence.dto.ThumbnailDTO;
 import com.tecnocampus.LS2.protube_back.persistence.dto.VideoDTO;
 import com.tecnocampus.LS2.protube_back.services.VideoService;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -118,6 +121,39 @@ public class VideoController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("/upload")
+    public ResponseEntity<VideoDTO> uploadVideo(@RequestParam MultipartFile file, @RequestParam String metadata) {
+        String filename = Objects.requireNonNull(file.getOriginalFilename());
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            VideoDTO videoDTO = objectMapper.readValue(metadata, VideoDTO.class);
+
+            File videoFile = new File(storeDir, filename);
+            file.transferTo(videoFile);
+
+            VideoDTO videoDTOWithFilename = new VideoDTO(
+                    videoDTO.id(),
+                    videoDTO.title(),
+                    videoDTO.width(),
+                    videoDTO.height(),
+                    videoDTO.duration(),
+                    videoDTO.description(),
+                    filename,
+                    videoDTO.userId(),
+                    videoDTO.categoryId(),
+                    videoDTO.tagId(),
+                    videoDTO.commentId()
+            );
+
+            Video video = new Video(videoDTOWithFilename);
+            videoService.videoRepository.save(video);
+            return ResponseEntity.status(201).body(videoDTOWithFilename);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+
     private File findThumbnailFile(String baseName) {
         String[] exts = new String[] { ".webp", ".jpg", ".jpeg", ".png" };
         for (String ext : exts) {
@@ -143,4 +179,6 @@ public class VideoController {
             return MediaType.IMAGE_PNG;
         return MediaType.APPLICATION_OCTET_STREAM;
     }
+
+
 }
