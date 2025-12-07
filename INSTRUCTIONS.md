@@ -76,6 +76,9 @@ Setup enviroment variables:
 
 If the app is run in the Docker container, you must put the video files inside the Docker container's folder: /app/store
 
+You may also use Docker Desktop for easier access:
+<img width="1262" height="708" alt="Captura de pantalla 2025-12-07 a las 20 21 20" src="https://github.com/user-attachments/assets/2cf671f7-3722-4ccd-9853-9726b0ba0b7d" />
+
 
 (This is the default value of our enviroment variables already.)
 
