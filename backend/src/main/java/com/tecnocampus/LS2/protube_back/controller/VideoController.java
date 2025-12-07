@@ -11,11 +11,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.info.MultimediaInfo;
+import ws.schild.jave.info.VideoSize;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/videos")
@@ -116,6 +125,70 @@ public class VideoController {
             }
         }
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<VideoDTO> uploadVideo(@RequestParam("file") MultipartFile file) {
+        try {
+            String originalFilename = Objects.requireNonNull(file.getOriginalFilename());
+            String extension = getFileExtension(originalFilename);
+            String uniqueFilename = UUID.randomUUID() + extension;
+
+            // Save the file to the store directory
+            Path storePath = Path.of(storeDir);
+            if (!Files.exists(storePath)) {
+                Files.createDirectories(storePath);
+            }
+            Path targetPath = storePath.resolve(uniqueFilename);
+            Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Extract video metadata using JAVE2
+            File videoFile = targetPath.toFile();
+            MultimediaObject multimediaObject = new MultimediaObject(videoFile);
+            MultimediaInfo info = multimediaObject.getInfo();
+
+            float duration = info.getDuration() / 1000f; // Convert ms to seconds
+            float width = 0;
+            float height = 0;
+
+            if (info.getVideo() != null) {
+                VideoSize size = info.getVideo().getSize();
+                if (size != null) {
+                    width = size.getWidth();
+                    height = size.getHeight();
+                }
+            }
+
+            // Use the original filename (without extension) as the title
+            String title = stripExtension(originalFilename);
+
+            VideoDTO videoDTO = new VideoDTO(
+                    null,           // id - will be generated
+                    title,          // title from filename
+                    width,          // width from metadata
+                    height,         // height from metadata
+                    duration,       // duration from metadata
+                    null,           // description
+                    uniqueFilename, // stored filename
+                    null,           // userId
+                    null,           // categoryId
+                    null,           // tagId
+                    null            // commentId
+            );
+
+            VideoDTO savedVideo = videoService.createVideo(videoDTO);
+            return ResponseEntity.status(201).body(savedVideo);
+
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    private String getFileExtension(String filename) {
+        int idx = filename.lastIndexOf('.');
+        return idx >= 0 ? filename.substring(idx) : "";
     }
 
     private File findThumbnailFile(String baseName) {
