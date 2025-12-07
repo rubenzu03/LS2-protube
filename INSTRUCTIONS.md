@@ -40,6 +40,9 @@ For this project we have been using a Kanban board created with Trello. You can 
 - Added MySQL service and Docker Compose configuration.
 - Environment variables: DATABASE_URL, JWT_SECRET, SPRING_PROFILES_ACTIVE, FRONTEND_URL.
 
+## Containerization 
+- A docker-compose file is provided to run the backend in a Docker container.
+
 ## Architecture of the new environment
 Frontend (React) ⟷ Backend (Spring Boot REST API) ⟷ MySQLç
 Authentication:
@@ -69,9 +72,14 @@ Setup enviroment variables:
 - ENV_PROTUBE_DB_URL -> dbc:mysql://localhost:3306/protube_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
 - ENV_PROTUBE_DB_USER -> protube_user
 - ENV_PROTUBE_DB_PWD -> protube_pass
-- ENV_PROTUBE_DB_DRIVER -> com.mysql.cj.jdbc.Driver<br></br>
+- ENV_PROTUBE_DB_DRIVER -> com.mysql.cj.jdbc.Driver
+
+If the app is run in the Docker container, you must put the video files inside the Docker container's folder: /app/store
+
+
 (This is the default value of our enviroment variables already.)
-<br></br>
+
+
 - pro_tube.store.dir -> source where to find the videos in your Pc
   
 ## Run 
