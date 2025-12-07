@@ -11,7 +11,7 @@ services:
       MYSQL_USER: protube_user
       MYSQL_PASSWORD: protube_pass
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db-data:/var/lib/mysql
     healthcheck:
@@ -41,4 +41,3 @@ services:
 
 volumes:
   db-data:
-
