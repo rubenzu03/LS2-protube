@@ -75,13 +75,17 @@ Setup enviroment variables:
 - ENV_PROTUBE_DB_DRIVER -> com.mysql.cj.jdbc.Driver
 
 If the app is run in the Docker container, you must put the video files inside the Docker container's folder: /app/store
-
-You may also use Docker Desktop for easier access:
+You may also use Docker Desktop for easier access to the mounted directory on your computer
 <img width="1262" height="708" alt="Captura de pantalla 2025-12-07 a las 20 21 20" src="https://github.com/user-attachments/assets/2cf671f7-3722-4ccd-9853-9726b0ba0b7d" />
+<br></br>
+#### Example: Place the files in the /store folder
+<br></br>
+<img width="925" height="443" alt="Captura de pantalla 2025-12-07 a las 20 34 48" src="https://github.com/user-attachments/assets/d0795c90-9dda-4257-89a6-0fcc5747a6ed" />
 
+
+If you run the app without using the provided Docker, then edit the ENV variable pro_tube.store.dir for the files
 
 (This is the default value of our enviroment variables already.)
-
 
 - pro_tube.store.dir -> source where to find the videos in your Pc
   
