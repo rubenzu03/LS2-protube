@@ -61,5 +61,61 @@ class UserServiceTest {
         assertNotNull(result);
         assertEquals(7L, result.id());
         assertEquals("u", result.username());
+
+        com.tecnocampus.LS2.protube_back.domain.Comment comment = new com.tecnocampus.LS2.protube_back.domain.Comment();
+        comment.setContent("ok");
+        assertEquals("ok", comment.getContent());
+    }
+    @Test
+    void deleteUser_existing_returnsDTOAndDeletes() {
+        UserRepository userRepository = Mockito.mock(UserRepository.class);
+        VideoRepository videoRepository = Mockito.mock(VideoRepository.class);
+        CommentRepository commentRepository = Mockito.mock(CommentRepository.class);
+
+        User u = new User();
+        u.setId(11L);
+        u.setUsername("delUser");
+
+        Mockito.when(userRepository.findById(11L)).thenReturn(Optional.of(u));
+
+        UserService service = new UserService(userRepository, videoRepository, commentRepository);
+
+        var dto = service.deleteUser(11L);
+        assertNotNull(dto);
+        assertEquals(11L, dto.id());
+        Mockito.verify(userRepository, Mockito.times(1)).deleteById(11L);
+    }
+    @Test
+    void deleteUser_notFound_returnsNull() {
+        UserRepository userRepository = Mockito.mock(UserRepository.class);
+        VideoRepository videoRepository = Mockito.mock(VideoRepository.class);
+        CommentRepository commentRepository = Mockito.mock(CommentRepository.class);
+
+        Mockito.when(userRepository.findById(20L)).thenReturn(Optional.empty());
+
+        UserService service = new UserService(userRepository, videoRepository, commentRepository);
+
+        var dto = service.deleteUser(20L);
+        assertNull(dto);
+        Mockito.verify(userRepository, Mockito.never()).deleteById(ArgumentMatchers.anyLong());
+    }
+    @Test
+    void getUserByUsername_found_returnsDTO() {
+        UserRepository userRepository = Mockito.mock(UserRepository.class);
+        VideoRepository videoRepository = Mockito.mock(VideoRepository.class);
+        CommentRepository commentRepository = Mockito.mock(CommentRepository.class);
+
+        User u = new User();
+        u.setId(99L);
+        u.setUsername("searchme");
+
+        Mockito.when(userRepository.findByUsername("searchme")).thenReturn(u);
+
+        UserService service = new UserService(userRepository, videoRepository, commentRepository);
+
+        var dto = service.getUserByUsername("searchme");
+        assertNotNull(dto);
+        assertEquals(99L, dto.id());
+        assertEquals("searchme", dto.username());
     }
 }

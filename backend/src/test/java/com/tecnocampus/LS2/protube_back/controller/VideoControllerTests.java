@@ -53,7 +53,6 @@ public class VideoControllerTests {
 
     @BeforeEach
     void setup() {
-        // ensure controller has the temp directory as storeDir (in case property not picked)
         VideoController controller = webApplicationContext.getBean(VideoController.class);
         String tmp = System.getProperty("java.io.tmpdir");
         ReflectionTestUtils.setField(controller, "storeDir", tmp);
@@ -85,7 +84,6 @@ public class VideoControllerTests {
     @Test
     void createVideo_returnsCreatedWithBody() throws Exception {
         VideoDTO v = new VideoDTO(null, "New", 100f, 100f, 1f, "desc", "new.mp4", null, null, null, null);
-        // controller returns the same DTO body, it calls service but responds with the passed dto
         when(videoService.createVideo(any())).thenReturn(new VideoDTO(10L, "New", 100f, 100f, 1f, "desc", "new.mp4", null, null, null, null));
 
         mockMvc.perform(post("/api/videos")
@@ -121,7 +119,6 @@ public class VideoControllerTests {
 
     @Test
     void streamVideo_returnsFile_whenExists() throws Exception {
-        // create temp file in the controller's store dir
         String tmp = System.getProperty("java.io.tmpdir");
         File f = File.createTempFile("videotest-", ".mp4", new File(tmp));
         f.deleteOnExit();
@@ -134,5 +131,96 @@ public class VideoControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Disposition", "inline; filename=\"" + f.getName() + "\""))
                 .andExpect(header().string("Content-Type", "video/mp4"));
+    }
+
+    @Test
+    void getThumbnail_returnsNotFound_whenNoFilenameOrMissingFile() throws Exception {
+        VideoDTO vNoFile = new VideoDTO(7L, "NoFile", 1f, 1f, 1f, "d", null, null, null, null, null);
+        when(videoService.getVideoById(7L)).thenReturn(vNoFile);
+
+        mockMvc.perform(get("/api/videos/thumbnail/7"))
+                .andExpect(status().isNotFound());
+
+        VideoDTO vWithFilename = new VideoDTO(8L, "MissingFile", 1f, 1f, 1f, "d", "does-not-exist.mp4", null, null, null, null);
+        when(videoService.getVideoById(8L)).thenReturn(vWithFilename);
+
+        mockMvc.perform(get("/api/videos/thumbnail/8"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getThumbnail_returnsFile_whenExists_withDifferentExtensions() throws Exception {
+        String tmp = System.getProperty("java.io.tmpdir");
+
+        File fWebp = File.createTempFile("thumbtest-webp-", ".webp", new File(tmp));
+        File fJpg = File.createTempFile("thumbtest-jpg-", ".jpg", new File(tmp));
+        File fPng = File.createTempFile("thumbtest-png-", ".png", new File(tmp));
+        fWebp.deleteOnExit(); fJpg.deleteOnExit(); fPng.deleteOnExit();
+
+        // create files named base of video filenames
+        String base1 = "vidwebp" + System.nanoTime();
+        File targetWebp = new File(tmp, base1 + ".webp");
+        Files.write(targetWebp.toPath(), "d".getBytes());
+        targetWebp.deleteOnExit();
+
+        String base2 = "vidjpg" + System.nanoTime();
+        File targetJpg = new File(tmp, base2 + ".jpg");
+        Files.write(targetJpg.toPath(), "d".getBytes());
+        targetJpg.deleteOnExit();
+
+        String base3 = "vidpng" + System.nanoTime();
+        File targetPng = new File(tmp, base3 + ".png");
+        Files.write(targetPng.toPath(), "d".getBytes());
+        targetPng.deleteOnExit();
+
+        VideoDTO v1 = new VideoDTO(21L, "t1", 1f,1f,1f, "d", base1 + ".mp4", null, null, null, null);
+        VideoDTO v2 = new VideoDTO(22L, "t2", 1f,1f,1f, "d", base2 + ".mp4", null, null, null, null);
+        VideoDTO v3 = new VideoDTO(23L, "t3", 1f,1f,1f, "d", base3 + ".mp4", null, null, null, null);
+
+        when(videoService.getVideoById(21L)).thenReturn(v1);
+        when(videoService.getVideoById(22L)).thenReturn(v2);
+        when(videoService.getVideoById(23L)).thenReturn(v3);
+
+        // webp
+        mockMvc.perform(get("/api/videos/thumbnail/21"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition", org.hamcrest.Matchers.containsString(".webp")))
+                .andExpect(header().string("Content-Type", "image/webp"));
+
+        // jpg
+        mockMvc.perform(get("/api/videos/thumbnail/22"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition", org.hamcrest.Matchers.containsString(".jpg")))
+                .andExpect(header().string("Content-Type", "image/jpeg"));
+
+        // png
+        mockMvc.perform(get("/api/videos/thumbnail/23"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition", org.hamcrest.Matchers.containsString(".png")))
+                .andExpect(header().string("Content-Type", "image/png"));
+    }
+
+    @Test
+    void listThumbnails_returnsOnlyExistingThumbnails() throws Exception {
+        String tmp = System.getProperty("java.io.tmpdir");
+
+        String baseA = "listthumbA" + System.nanoTime();
+        File tA = new File(tmp, baseA + ".jpg");
+        Files.write(tA.toPath(), "d".getBytes());
+        tA.deleteOnExit();
+
+        String baseB = "listthumbB" + System.nanoTime();
+        // don't create file for B -> should be skipped
+
+        VideoDTO a = new VideoDTO(31L, "a", 1f,1f,1f,"d", baseA + ".mp4", null, null, null, null);
+        VideoDTO b = new VideoDTO(32L, "b", 1f,1f,1f,"d", baseB + ".mp4", null, null, null, null);
+        VideoDTO c = new VideoDTO(33L, "c", 1f,1f,1f,"d", null, null, null, null, null);
+
+        when(videoService.getVideos()).thenReturn(List.of(a, b, c));
+
+        mockMvc.perform(get("/api/videos/thumbnails"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].id").value(31));
     }
 }

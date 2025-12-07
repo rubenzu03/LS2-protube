@@ -1,5 +1,5 @@
 # yaml
-# File: docker-compose.yml  (repo root) - includes db + backend services
+# File: docker-compose.yml inside backend/ folder
 version: "3.8"
 services:
   db:
@@ -11,7 +11,7 @@ services:
       MYSQL_USER: protube_user
       MYSQL_PASSWORD: protube_pass
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db-data:/var/lib/mysql
     healthcheck:
@@ -22,29 +22,22 @@ services:
 
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-    depends_on:
-      - db
-
-volumes:
-  db-data:
-
----
-# File: backend/docker-compose.yml  (if you want a compose file inside `backend/` for only backend)
-version: "3.8"
-services:
-  backend:
-    build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: dev
-    # If the DB is in a separate compose on the repo root, remove depends_on and
-    # point your JDBC URL to localhost:3306 (host mapped) or to the DB service via network.
+      ENV_PROTUBE_DB_URL: jdbc:mysql://db:3306/protube_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      ENV_PROTUBE_DB_USER: protube_user
+      ENV_PROTUBE_DB_PWD: protube_pass
+      ENV_PROTUBE_STORE_DIR: /app/store
+      PRO_TUBE_LOAD_INITIAL_DATA: "false"
+    volumes:
+      - ../tooling/videoGrabber/store:/app/store
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
