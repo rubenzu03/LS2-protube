@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { User as UserIcon } from 'lucide-react';
-
+import { User as UserIcon, UploadCloud } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -12,7 +11,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { ModeToggle } from '@/components/mode-toggle';
-import { api } from '@/utils/api';
+import { api, clearAuthToken } from '@/utils/api';
 
 const TOKEN_KEY = 'protube_token';
 
@@ -20,7 +19,6 @@ export function UserButton() {
   const [hasToken, setHasToken] = useState<boolean>(() => {
     return typeof window !== 'undefined' && !!window.localStorage.getItem(TOKEN_KEY);
   });
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -46,7 +44,6 @@ export function UserButton() {
         }
       }
     };
-
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
@@ -56,10 +53,13 @@ export function UserButton() {
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    delete api.defaults.headers.common.Authorization;
+    clearAuthToken();
     setHasToken(false);
     navigate('/', { replace: true });
+  };
+
+  const handleUpload = () => {
+    navigate('/upload');
   };
 
   return (
@@ -76,6 +76,20 @@ export function UserButton() {
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        {hasToken && (
+          <>
+            <DropdownMenuItem
+              onSelect={(event) => {
+                event.preventDefault();
+                handleUpload();
+              }}
+            >
+              <UploadCloud className="mr-2 h-4 w-4" />
+              <span>Upload video</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
         <DropdownMenuItem asChild>
           <ModeToggle />
         </DropdownMenuItem>

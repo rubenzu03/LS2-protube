@@ -76,6 +76,14 @@ public class VideoService {
 
     public VideoDTO createVideo(VideoDTO videoDTO) {
         Video video = toDomain(videoDTO);
+        if (video.getId() == null) {
+            Long maxId = videoRepository.findAll().stream()
+                    .map(Video::getId)
+                    .filter(java.util.Objects::nonNull)
+                    .max(Long::compareTo)
+                    .orElse(0L);
+            video.setId(maxId + 1);
+        }
         Video saved = videoRepository.save(video);
         return toDTO(saved);
     }
