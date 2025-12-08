@@ -25,7 +25,6 @@ export function ChannelActions({ uploaderId }: Props) {
         </Link>
       </div>
 
-
     </div>
   );
 }
