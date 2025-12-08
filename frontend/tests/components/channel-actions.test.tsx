@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { ChannelActions } from '@/components/video/channel-actions';
 import { BrowserRouter } from 'react-router';
+import { useUserInfo } from '@/hooks/video-hooks';
 
 jest.mock('@/hooks/video-hooks', () => ({
   useUserInfo: jest.fn(() => ({
@@ -33,7 +34,6 @@ describe('ChannelActions', () => {
   });
 
   it('displays "Unknown" when uploader id is not provided', () => {
-    const { useUserInfo } = require('@/hooks/video-hooks');
     useUserInfo.mockReturnValueOnce({
       user: null,
       isLoading: false,

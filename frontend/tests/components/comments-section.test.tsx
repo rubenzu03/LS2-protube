@@ -1,6 +1,7 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router';
 import { CommentsSection } from '@/components/video/comments-section';
+import { useVideoComments, useCreateComment } from '@/hooks/comment-hooks';
 
 const mockNavigate = jest.fn();
 
@@ -150,7 +151,6 @@ describe('CommentsSection', () => {
 
   it('calls mutateAsync when comment is submitted', async () => {
     const mockMutateAsync = jest.fn().mockResolvedValue({});
-    const { useCreateComment } = require('@/hooks/comment-hooks');
     useCreateComment.mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: false
@@ -180,7 +180,6 @@ describe('CommentsSection', () => {
   });
 
   it('shows loading state', () => {
-    const { useVideoComments } = require('@/hooks/comment-hooks');
     useVideoComments.mockReturnValue({
       comments: [],
       loading: 'loading'
@@ -196,7 +195,6 @@ describe('CommentsSection', () => {
   });
 
   it('shows error state', () => {
-    const { useVideoComments } = require('@/hooks/comment-hooks');
     useVideoComments.mockReturnValue({
       comments: [],
       loading: 'error'
@@ -212,7 +210,6 @@ describe('CommentsSection', () => {
   });
 
   it('shows empty state when no comments', () => {
-    const { useVideoComments } = require('@/hooks/comment-hooks');
     useVideoComments.mockReturnValue({
       comments: [],
       loading: 'success'
@@ -249,7 +246,6 @@ describe('CommentsSection', () => {
   });
 
   it('displays fallback username for comments without username', () => {
-    const { useVideoComments } = require('@/hooks/comment-hooks');
     useVideoComments.mockReturnValue({
       comments: [
         { id: 1, content: 'Comment 1', username: '', userId: 42 },
@@ -270,7 +266,6 @@ describe('CommentsSection', () => {
 
   it('does not submit when content is empty or whitespace', () => {
     const mockMutateAsync = jest.fn();
-    const { useCreateComment } = require('@/hooks/comment-hooks');
     useCreateComment.mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: false
@@ -294,7 +289,6 @@ describe('CommentsSection', () => {
 
   it('does not submit when videoId is missing', async () => {
     const mockMutateAsync = jest.fn();
-    const { useCreateComment } = require('@/hooks/comment-hooks');
     useCreateComment.mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: false
@@ -322,7 +316,6 @@ describe('CommentsSection', () => {
 
   it('clears textarea after successful comment submission', async () => {
     const mockMutateAsync = jest.fn().mockResolvedValue({});
-    const { useCreateComment } = require('@/hooks/comment-hooks');
     useCreateComment.mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: false

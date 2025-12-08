@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router';
 import { VideoCard } from '@/components/video-card';
 import type { Video } from '@/types/videos';
 import type { Thumbnail } from '@/utils/api';
+import { useUserInfo } from '@/hooks/video-hooks';
 
 jest.mock('@/utils/api');
 jest.mock('@/hooks/video-hooks', () => ({
@@ -123,7 +124,7 @@ describe('VideoCard', () => {
 
   it('handles mouse enter and leave events', () => {
     jest.useFakeTimers();
-    
+
     render(
       <BrowserRouter>
         <VideoCard video={mockVideo} thumbnail={mockThumbnail} />
@@ -131,22 +132,22 @@ describe('VideoCard', () => {
     );
 
     const videoLink = screen.getAllByRole('link')[0];
-    
+
     // Simulate mouse enter
     videoLink.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-    
+
     // Fast-forward time
     jest.advanceTimersByTime(1000);
-    
+
     // Simulate mouse leave
     videoLink.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
-    
+
     jest.useRealTimers();
   });
 
   it('clears hover timer on quick mouse leave', () => {
     jest.useFakeTimers();
-    
+
     render(
       <BrowserRouter>
         <VideoCard video={mockVideo} thumbnail={mockThumbnail} />
@@ -154,12 +155,12 @@ describe('VideoCard', () => {
     );
 
     const videoLink = screen.getAllByRole('link')[0];
-    
+
     // Simulate quick hover (leave before delay)
     videoLink.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
     jest.advanceTimersByTime(500); // Less than PREVIEW_DELAY_MS
     videoLink.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
-    
+
     jest.useRealTimers();
   });
 
@@ -178,12 +179,11 @@ describe('VideoCard', () => {
     channelLinks[0].addEventListener('click', (e) => {
       e.stopPropagation = stopPropagationSpy;
     });
-    
+
     channelLinks[0].click();
   });
 
   it('displays fallback channel label when username is missing', () => {
-    const { useUserInfo } = require('@/hooks/video-hooks');
     useUserInfo.mockReturnValue({
       user: null,
       isLoading: false,
@@ -212,7 +212,7 @@ describe('VideoCard', () => {
 
   it('handles video preview play error gracefully', () => {
     jest.useFakeTimers();
-    
+
     const mockPlay = jest.fn().mockRejectedValue(new Error('Play failed'));
     HTMLMediaElement.prototype.play = mockPlay;
 
@@ -224,9 +224,9 @@ describe('VideoCard', () => {
 
     const videoLink = screen.getAllByRole('link')[0];
     videoLink.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-    
+
     jest.advanceTimersByTime(1000);
-    
+
     jest.useRealTimers();
   });
 });
