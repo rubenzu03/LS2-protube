@@ -1,13 +1,4 @@
-import { Button } from '@/components/ui/button';
 import { Link } from 'react-router';
-import {
-  HandThumbUpIcon,
-  HandThumbDownIcon,
-  ShareIcon,
-  ArrowDownTrayIcon,
-  PlusCircleIcon,
-  EllipsisHorizontalIcon
-} from '@heroicons/react/24/solid';
 import { useUserInfo } from '@/hooks/video-hooks';
 
 type Props = {
