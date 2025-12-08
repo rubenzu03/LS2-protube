@@ -89,6 +89,8 @@ If you run the app without using the provided Docker, then edit the ENV variable
 (This is the default value of our enviroment variables already.)
 
 - pro_tube.store.dir -> source where to find the videos in your Pc
+
+### Notice: Execution with Docker doesn't support video upload
   
 ## Run 
 1) Start docker compose
