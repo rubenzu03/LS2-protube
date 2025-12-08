@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>10/12</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
@@ -127,7 +127,17 @@
 <a name='L62'></a><a href='#L62'>62</a>
 <a name='L63'></a><a href='#L63'>63</a>
 <a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -136,12 +146,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -191,7 +205,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Button } from '@/components/ui/button';
+import { Link } from 'react-router';
 import {
   HandThumbUpIcon,
   HandThumbDownIcon,
@@ -200,23 +219,31 @@ import {
   PlusCircleIcon,
   EllipsisHorizontalIcon
 } from '@heroicons/react/24/solid';
+import { useUserInfo } from '@/hooks/video-hooks';
 &nbsp;
 type Props = {
   uploaderId?: string;
 };
 &nbsp;
 export function ChannelActions({ uploaderId }: Props) {
+  const { user } = useUserInfo(uploaderId);
+  const uploaderName = user?.username || 'Unknown';
+&nbsp;
   return (
     &lt;div className="flex items-center justify-between"&gt;
       &lt;div className="flex items-center gap-3"&gt;
-        &lt;div className="h-10 w-10 overflow-hidden rounded-full bg-muted"&gt;
-          &lt;img src="/abstract-channel-avatar.png" alt="Channel avatar" className="h-full w-full object-cover" /&gt;
-        &lt;/div&gt;
-        &lt;div className="flex flex-col"&gt;
-          &lt;span className="text-sm font-semibold"&gt;Uploader&lt;/span&gt;
-          &lt;span className="max-w-[200px] truncate text-xs text-muted-foreground"&gt;{uploaderId ?? 'Unknown'}&lt;/span&gt;
-        &lt;/div&gt;
-        &lt;Button className="ml-4 font-medium rounded-full bg-white text-black hover:bg-white/90 dark:bg-white dark:text-black"&gt;
+        &lt;Link to={`/channel/${uploaderId}`}&gt;
+          &lt;div className="h-10 w-10 overflow-hidden rounded-full bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white text-sm font-bold hover:opacity-80 transition-opacity"&gt;
+            {uploaderName[0]<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oUpperCase() || <span class="branch-1 cbranch-no" title="branch not covered" >'?'}</span>
+          &lt;/div&gt;
+        &lt;/Link&gt;
+        &lt;Link to={`/channel/${uploaderId}`}&gt;
+          &lt;div className="flex flex-col"&gt;
+            &lt;span className="text-sm font-semibold"&gt;{uploaderName}&lt;/span&gt;
+            &lt;span className="max-w-[200px] truncate text-xs text-muted-foreground"&gt;@{uploaderName.toLowerCase().replace(/\s+/g, '')}&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/Link&gt;
+        &lt;Button className="ml-4 font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90"&gt;
           Subscribe
         &lt;/Button&gt;
       &lt;/div&gt;
@@ -262,7 +289,7 @@ export function ChannelActions({ uploaderId }: Props) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-02T16:59:20.914Z
+                at 2025-12-08T21:26:35.209Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
