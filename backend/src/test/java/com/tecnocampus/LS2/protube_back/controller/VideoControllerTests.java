@@ -1,32 +1,37 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tecnocampus.LS2.protube_back.persistence.UserRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.VideoDTO;
 import com.tecnocampus.LS2.protube_back.security.JwtAuthenticationFilter;
 import com.tecnocampus.LS2.protube_back.services.VideoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,6 +52,9 @@ public class VideoControllerTests {
 
     @MockBean
     private VideoService videoService;
+
+    @MockBean
+    private UserRepository userRepository;
 
     @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -222,5 +230,34 @@ public class VideoControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].id").value(31));
+    }
+
+    @Test
+    void uploadVideo_successful_returnsCreated() throws Exception {
+        byte[] content = "video content".getBytes(StandardCharsets.UTF_8);
+        MockMultipartFile file = new MockMultipartFile("file", "upload.mp4", "video/mp4", content);
+
+        VideoDTO savedVideo = new VideoDTO(100L, "upload", 640f, 480f, 10f, null, "some-uuid.mp4", null, null, null, null);
+        when(videoService.createVideo(ArgumentMatchers.any(VideoDTO.class))).thenReturn(savedVideo);
+
+        mockMvc.perform(multipart("/api/videos/upload").file(file))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(100))
+                .andExpect(jsonPath("$.title").value("upload"));
+
+        verify(videoService, times(1)).createVideo(any(VideoDTO.class));
+    }
+
+    @Test
+    void uploadVideo_serviceThrows_returnsInternalServerError() throws Exception {
+        byte[] content = "bad content".getBytes(StandardCharsets.UTF_8);
+        MockMultipartFile file = new MockMultipartFile("file", "test.mp4", "video/mp4", content);
+
+        when(videoService.createVideo(ArgumentMatchers.any(VideoDTO.class))).thenThrow(new RuntimeException("boom"));
+
+        mockMvc.perform(multipart("/api/videos/upload").file(file))
+                .andExpect(status().isInternalServerError());
+
+        verify(videoService, times(1)).createVideo(any(VideoDTO.class));
     }
 }

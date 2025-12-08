@@ -9,7 +9,15 @@ jest.mock('react-router', () => ({
   useParams: () => ({ id: 'user123' })
 }));
 
-jest.mock('@/hooks/video-hooks');
+jest.mock('@/hooks/video-hooks', () => ({
+  useChannelData: jest.fn(),
+  useUserInfo: jest.fn(() => ({
+    user: { id: 'user123', username: 'TestUser' },
+    isLoading: false,
+    isError: false
+  }))
+}));
+jest.mock('@/hooks/use-document-title');
 
 const mockUser = {
   id: 'user123',
@@ -104,7 +112,8 @@ describe('ChannelPage', () => {
     render(<ChannelPage />, { wrapper: createWrapper() });
 
     await waitFor(() => {
-      expect(screen.getByText('TestUser')).toBeInTheDocument();
+      const testUserElements = screen.getAllByText('TestUser');
+      expect(testUserElements.length).toBeGreaterThan(0);
       expect(screen.getByText('Test Video 1')).toBeInTheDocument();
       expect(screen.getByText('1 video')).toBeInTheDocument();
     });

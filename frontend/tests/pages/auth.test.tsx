@@ -55,7 +55,7 @@ describe('AuthPage', () => {
     const signUpButton = screen.getAllByRole('button', { name: /create account/i })[0];
     fireEvent.click(signUpButton);
 
-    expect(screen.getByText('Sign up', { selector: 'span' })).toBeInTheDocument();
+    expect(screen.getByText('Create account', { selector: 'span' })).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Repeat your password')).toBeInTheDocument();
   });
 
@@ -68,7 +68,7 @@ describe('AuthPage', () => {
 
     // Switch to sign up
     fireEvent.click(screen.getAllByRole('button', { name: /create account/i })[0]);
-    expect(screen.getByText('Sign up', { selector: 'span' })).toBeInTheDocument();
+    expect(screen.getByText('Create account', { selector: 'span' })).toBeInTheDocument();
 
     // Switch back to sign in
     fireEvent.click(screen.getAllByRole('button', { name: /sign in/i })[0]);

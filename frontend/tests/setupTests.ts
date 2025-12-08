@@ -20,6 +20,12 @@ Object.defineProperty(window, 'matchMedia', {
   }))
 });
 
+// Mock window.scrollTo
+Object.defineProperty(window, 'scrollTo', {
+  writable: true,
+  value: jest.fn()
+});
+
 // Mock localStorage with actual storage implementation
 const storage: Record<string, string> = {};
 const localStorageMock: Storage = {

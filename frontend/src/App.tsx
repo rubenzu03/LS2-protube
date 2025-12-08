@@ -6,6 +6,7 @@ import { VideoPage } from './components/pages/video-page';
 import { SearchPage } from './components/pages/search-page';
 import { AuthPage } from '@/components/pages/auth';
 import { ChannelPage } from './components/pages/channel-page';
+import { UploadPage } from '@/components/pages/upload';
 
 const queryClient = new QueryClient();
 
@@ -20,10 +21,12 @@ function App() {
             <Route path="/video/:id" element={<VideoPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/channel/:id" element={<ChannelPage />} />
+            <Route path="/upload" element={<UploadPage />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
     </QueryClientProvider>
   );
 }
+
 export default App;

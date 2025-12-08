@@ -11,7 +11,15 @@ jest.mock('react-router', () => ({
 }));
 
 jest.mock('@/utils/api');
-jest.mock('@/hooks/video-hooks');
+jest.mock('@/hooks/video-hooks', () => ({
+  useAllVideos: jest.fn(),
+  useUserInfo: jest.fn(() => ({
+    user: { id: 'user123', username: 'TestUser' },
+    isLoading: false,
+    isError: false
+  }))
+}));
+jest.mock('@/hooks/use-document-title');
 
 const mockVideo = {
   id: '1',
@@ -64,7 +72,7 @@ describe('VideoPage', () => {
 
   it('shows loading state', () => {
     (api.getVideoPageData as jest.Mock).mockImplementation(
-      () => new Promise(() => {}) // Never resolves
+      () => new Promise(() => { }) // Never resolves
     );
 
     render(<VideoPage />, { wrapper: createWrapper() });

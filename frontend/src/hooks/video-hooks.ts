@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/utils/api';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { api, uploadVideo, type UploadVideoPayload } from '@/utils/api';
 import type { User, Video } from '@/types/videos';
 import type { Thumbnail } from '@/utils/api';
 
@@ -85,6 +85,7 @@ export function useChannelData(userId: string) {
 
 export function useSearchVideos(query: string) {
   const trimmedQuery = query.trim();
+
   const { data, isLoading, isError, isSuccess, error } = useQuery({
     queryKey: ['searchVideos', trimmedQuery],
     queryFn: async (): Promise<SearchVideosResponse> => {
@@ -119,4 +120,31 @@ export function useSearchVideos(query: string) {
         : '';
 
   return { videos: data?.videos ?? [], thumbnails: data?.thumbnails ?? [], message, loading };
+}
+
+export function useUploadVideo() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: UploadVideoPayload) => uploadVideo(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['videos&thumbnails'] });
+    }
+  });
+}
+
+export function useUserInfo(userId: string | undefined) {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: async (): Promise<User> => {
+      const response = await api.get<User>(`/user/byId/${userId}`);
+      return response.data;
+    },
+    enabled: !!userId
+  });
+
+  return {
+    user: data ?? null,
+    isLoading,
+    isError
+  };
 }
