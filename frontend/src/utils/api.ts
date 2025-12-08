@@ -76,9 +76,9 @@ export type UploadVideoPayload = {
 
 export const uploadVideo = async ({ file, title, description }: UploadVideoPayload) => {
   const formData = new FormData();
-  formData.append('file', file);
-  formData.append('title', title);
-  formData.append('description', description);
+  formData.append('file', file, file.name);
+  formData.append('title', title || '');
+  formData.append('description', description || '');
   const response = await api.post<Video>('/videos/upload', formData);
   return response.data;
 };

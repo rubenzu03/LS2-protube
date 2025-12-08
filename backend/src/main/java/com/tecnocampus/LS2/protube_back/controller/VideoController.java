@@ -138,18 +138,26 @@ public class VideoController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<VideoDTO> uploadVideo(
+    public ResponseEntity<?> uploadVideo(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "description", required = false) String description) {
         try {
+            // Validate file
+            if (file == null || file.isEmpty()) {
+                return ResponseEntity.badRequest().body("No file provided");
+            }
+
+            String originalFilename = file.getOriginalFilename();
+            if (originalFilename == null || originalFilename.isBlank()) {
+                return ResponseEntity.badRequest().body("Invalid filename");
+            }
+
             // Get the authenticated user
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String username = auth != null ? auth.getName() : null;
             User currentUser = username != null ? userRepository.findByUsername(username) : null;
             Long userId = currentUser != null ? currentUser.getId() : null;
-
-            String originalFilename = Objects.requireNonNull(file.getOriginalFilename());
             String extension = getFileExtension(originalFilename);
             String uniqueFilename = UUID.randomUUID() + extension;
             String baseName = stripExtension(uniqueFilename);
@@ -212,7 +220,11 @@ public class VideoController {
             return ResponseEntity.status(201).body(savedVideo);
 
         } catch (IOException e) {
-            return ResponseEntity.internalServerError().build();
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Failed to save file: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Unexpected error: " + e.getMessage());
         }
     }
 
