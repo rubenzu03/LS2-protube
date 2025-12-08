@@ -82,6 +82,7 @@ You may also use Docker Desktop for easier access to the mounted directory on yo
 <br></br>
 <img width="925" height="443" alt="Captura de pantalla 2025-12-07 a las 20 34 48" src="https://github.com/user-attachments/assets/d0795c90-9dda-4257-89a6-0fcc5747a6ed" />
 
+You may also run verify-docker-build.ps1 to verify the Docker image and build the Docker container
 
 If you run the app without using the provided Docker, then edit the ENV variable pro_tube.store.dir for the files
 
