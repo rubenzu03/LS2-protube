@@ -213,6 +213,8 @@ public class VideoController {
 
         } catch (IOException e) {
             return ResponseEntity.internalServerError().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 
