@@ -9,6 +9,9 @@ import com.tecnocampus.LS2.protube_back.persistence.VideoRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.CommentDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 import java.util.Optional;
@@ -88,9 +91,18 @@ class CommentServiceTest {
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         VideoRepository videoRepository = Mockito.mock(VideoRepository.class);
 
-        CommentDTO input = new CommentDTO(null, "new", 5L, 6L);
+        CommentDTO input = new CommentDTO(null, "new", 5L, 6L,"test");
 
-        when(userRepository.getReferenceById(5L)).thenReturn(new User(5L, "u"));
+        Authentication auth = Mockito.mock(Authentication.class);
+        when(auth.isAuthenticated()).thenReturn(true);
+        when(auth.getPrincipal()).thenReturn("u");
+        when(auth.getName()).thenReturn("u");
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByUsername("u")).thenReturn(new User(5L, "u"));
+
         Video vid = new Video(); vid.setId(6L);
         when(videoRepository.getReferenceById(6L)).thenReturn(vid);
 
@@ -102,14 +114,18 @@ class CommentServiceTest {
 
         CommentService service = new CommentService(commentRepository, userRepository, videoRepository);
 
-        CommentDTO out = service.createComment(input);
-        assertNotNull(out);
-        assertEquals(100L, out.id());
-        assertEquals("new", out.content());
-        assertEquals(5L, out.userId());
-        assertEquals(6L, out.videoId());
+        try {
+            CommentDTO out = service.createComment(input);
+            assertNotNull(out);
+            assertEquals(100L, out.id());
+            assertEquals("new", out.content());
+            assertEquals(5L, out.userId());
+            assertEquals(6L, out.videoId());
 
-        verify(commentRepository, atLeastOnce()).save(any(Comment.class));
+            verify(commentRepository, atLeastOnce()).save(any(Comment.class));
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
     }
 
     @Test
@@ -118,7 +134,7 @@ class CommentServiceTest {
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         VideoRepository videoRepository = Mockito.mock(VideoRepository.class);
 
-        CommentDTO input = new CommentDTO(null, "noRefs", null, null);
+        CommentDTO input = new CommentDTO(null, "noRefs", null, null,"test");
 
         when(commentRepository.save(any(Comment.class))).thenAnswer(invocation -> {
             Comment arg = invocation.getArgument(0);
@@ -180,7 +196,7 @@ class CommentServiceTest {
 
         CommentService service = new CommentService(commentRepository, userRepository, videoRepository);
 
-        CommentDTO dto = new CommentDTO(null, "x", null, null);
+        CommentDTO dto = new CommentDTO(null, "x", null, null,"test");
         assertNull(service.updateComment(99L, dto));
     }
 
@@ -207,7 +223,7 @@ class CommentServiceTest {
 
         CommentService service = new CommentService(commentRepository, userRepository, videoRepository);
 
-        CommentDTO dto = new CommentDTO(null, "updated", 7L, 8L);
+        CommentDTO dto = new CommentDTO(null, "updated", 7L, 8L,"test");
         CommentDTO out = service.updateComment(10L, dto);
 
         assertNotNull(out);
@@ -235,7 +251,7 @@ class CommentServiceTest {
 
         CommentService service = new CommentService(commentRepository, userRepository, videoRepository);
 
-        CommentDTO dto = new CommentDTO(null, "onlyContent", null, null);
+        CommentDTO dto = new CommentDTO(null, "onlyContent", null, null,"test");
         CommentDTO out = service.updateComment(11L, dto);
 
         assertNotNull(out);
@@ -243,6 +259,25 @@ class CommentServiceTest {
         assertEquals("onlyContent", out.content());
         assertNull(out.userId());
         assertNull(out.videoId());
+    }
+
+    @Test
+    void comment_domain_constructor_and_updates_work() {
+        // exercise Comment domain methods from inside service tests to increase coverage
+        CommentDTO dto = new CommentDTO(null, "fromDto", null, null, null);
+        Comment c = new Comment(dto);
+        assertEquals("fromDto", c.getContent());
+
+        User u = new User(1L, "user1");
+        c.updateUser(u);
+        assertSame(u, c.getUser());
+
+        CommentDTO dto2 = new CommentDTO(null, "changed", null, null, null);
+        c.updateComment(dto2);
+        assertEquals("changed", c.getContent());
+
+        c.setId(999L);
+        assertEquals(999L, c.getId());
     }
 
 }

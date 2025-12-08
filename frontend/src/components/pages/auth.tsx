@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import { Layout } from '@/components/layout/layout';
 import { Button } from '@/components/ui/button';
-import { getEnv } from '@/utils/env';
+import { getEnv } from '@/utils/Env';
 import { api } from '@/utils/api';
 import { useDocumentTitle } from '@/hooks/use-document-title';
 
@@ -84,15 +84,17 @@ export function AuthPage() {
           <div className="flex items-center gap-3">
             <img src="/protube-logo-removebg-preview.png" alt="ProTube" className="h-8 w-auto" />
             <div className="flex flex-col">
-              <span className="text-lg font-semibold">Sign {mode === 'signin' ? 'in' : 'up'}</span>
+              <span className="text-lg font-semibold">
+                {mode === 'signin' ? 'Sign in' : 'Create account'}
+              </span>
               <span className="text-xs text-muted-foreground">to continue to ProTube</span>
             </div>
           </div>
 
           <div className="relative flex gap-2 rounded-full bg-muted/60 p-1 text-sm">
             <div
-              className={`absolute inset-1 w-1/2 rounded-full bg-background shadow-sm transition-transform duration-300 ease-out ${
-                mode === 'signin' ? 'translate-x-0' : 'translate-x-full'
+              className={`absolute inset-y-1 w-1/2 rounded-full bg-background shadow-sm transition-all duration-300 ease-out ${
+                mode === 'signin' ? 'left-1' : 'left-1/2'
               }`}
             />
             <button

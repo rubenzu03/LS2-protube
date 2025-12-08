@@ -4,6 +4,7 @@ import { getThumbnail, getVideoStreamUrl } from '@/utils/api';
 import { Link } from 'react-router';
 import { CheckBadgeIcon } from '@heroicons/react/24/solid';
 import { useRef, useState } from 'react';
+import { useUserInfo } from '@/hooks/video-hooks';
 
 type Props = {
   video: Video;
@@ -15,7 +16,8 @@ export function VideoCard({ video, thumbnail }: Props) {
   const durationLabel = `${Math.floor(video.duration / 60)}:${Math.floor(video.duration % 60)
     .toString()
     .padStart(2, '0')}`;
-  const channelLabel = video.userId || 'Channel';
+  const { user } = useUserInfo(video.userId);
+  const channelLabel = user?.username || 'Channel';
   const [showPreview, setShowPreview] = useState(false);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previewRef = useRef<HTMLVideoElement | null>(null);
@@ -31,7 +33,7 @@ export function VideoCard({ video, thumbnail }: Props) {
           const el = previewRef.current;
           if (el) {
             el.currentTime = 0;
-            el.play().catch(() => {});
+            el.play().catch(() => { });
           }
         }, PREVIEW_DELAY_MS);
       }}
@@ -66,10 +68,10 @@ export function VideoCard({ video, thumbnail }: Props) {
       <div className="flex gap-3 p-3">
         <Link
           to={`/channel/${video.userId}`}
-          className="mt-0.5 h-9 w-9 overflow-hidden rounded-full bg-muted hover:opacity-80 transition-opacity"
+          className="mt-0.5 h-9 w-9 overflow-hidden rounded-full bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white text-sm font-bold hover:opacity-80 transition-opacity"
           onClick={(e) => e.stopPropagation()}
         >
-          <img src="/abstract-channel-avatar.png" alt={channelLabel} className="h-full w-full object-cover" />
+          {channelLabel[0]?.toUpperCase() || '?'}
         </Link>
         <div className="min-w-0 flex-1">
           <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug group-hover:text-foreground/90">

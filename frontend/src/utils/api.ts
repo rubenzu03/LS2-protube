@@ -1,27 +1,43 @@
-import axios from 'axios';
-import { getEnv } from './env';
+import axios, { type InternalAxiosRequestConfig } from 'axios';
+import { getEnv } from './Env';
 import type { Video } from '@/types/videos';
 
+const TOKEN_KEY = 'protube_token';
 const { API_BASE_URL } = getEnv();
 
 export const api = axios.create({
   baseURL: API_BASE_URL
 });
 
-const TOKEN_KEY = 'protube_token';
+export const clearAuthToken = () => {
+  if (typeof window !== 'undefined') {
+    window.localStorage.removeItem(TOKEN_KEY);
+  }
+  delete api.defaults.headers.common.Authorization;
+};
 
-api.interceptors.request.use((config) => {
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (typeof window !== 'undefined') {
     const token = window.localStorage.getItem(TOKEN_KEY);
     if (token) {
-      config.headers = config.headers ?? {};
-      if (!('Authorization' in config.headers)) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+      config.headers.Authorization = `Bearer ${token}`;
     }
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      if (status === 401 || status === 403) {
+        clearAuthToken();
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export const getVideo = async (id: string) => {
   const response = await api.get<Video>(`/videos/${id}`);
@@ -50,4 +66,34 @@ export const getThumbnail = (id: string | number) => {
 
 export const getVideoStreamUrl = (id: string | number) => {
   return `${getEnv().API_BASE_URL}/videos/stream/${id}`;
+};
+
+export type UploadVideoPayload = {
+  file: File;
+  title: string;
+  description: string;
+};
+
+export const uploadVideo = async ({ file, title, description }: UploadVideoPayload) => {
+  const formData = new FormData();
+  formData.append('file', file, file.name);
+  if (title) formData.append('title', title);
+  if (description) formData.append('description', description);
+  const token = window.localStorage.getItem('protube_token');
+  const headers: HeadersInit = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/videos/upload`, {
+    method: 'POST',
+    headers,
+    body: formData
+  });
+
+  if (!response.ok) {
+    throw new Error(`Upload failed: ${response.status}`);
+  }
+
+  return response.json() as Promise<Video>;
 };

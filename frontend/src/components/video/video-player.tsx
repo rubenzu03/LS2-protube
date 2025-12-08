@@ -11,7 +11,7 @@ type Props = {
 const MUTED_KEY = 'protube_muted';
 const VOLUME_KEY = 'protube_volume';
 
-export function VideoPlayer({ src, isLoading, error, poster, children }: Props) {
+export function VideoPlayer({ src, isLoading, error, poster }: Props) {
   const [isReady, setIsReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const getStoredVolume = () => {
@@ -52,6 +52,7 @@ export function VideoPlayer({ src, isLoading, error, poster, children }: Props) 
       {src && !error ? (
         <video
           ref={videoRef}
+          data-testid="video-player"
           className={
             cn('absolute inset-0 h-full w-full object-contain transition-opacity duration-500',
               '[&::-webkit-media-controls]:opacity-0 group-hover:[&::-webkit-media-controls]:opacity-100',

@@ -135,6 +135,27 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>0.11.5</version>
         </dependency>
+        <!-- JAVE2 for video metadata extraction -->
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-core</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-nativebin-osx64</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-nativebin-linux64</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-nativebin-win64</artifactId>
+            <version>3.5.0</version>
+        </dependency>
     </dependencies>
     <profiles>
         <profile>
@@ -237,11 +258,29 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>
+                                    <groupId>org.projectlombok</groupId>
+                                    <artifactId>lombok</artifactId>
+                                </exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <version>0.8.12</version>
                         <configuration>
-                            <excludes>com/tecnocampus/LS2/protube_back/ProtubeBackApplication*</excludes>
+                            <excludes>
+                                <exclude>**/AppStartupRunner*.class</exclude>
+                                <exclude>**/JwtAuthenticationFilter*.class</exclude>
+                                <exclude>**/SecurityConfig*.class</exclude>
+                                <exclude>**/ProtubeBackApplication*.class</exclude>
+
+                            </excludes>
                         </configuration>
                         <executions>
                             <execution>
@@ -301,11 +340,35 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.12</version>
                 <configuration>
-                    <excludes>com/tecnocampus/LS2/protube_back/ProtubeBackApplication*</excludes>
+                    <excludes>
+                        <exclude>**/AppStartupRunner*.class</exclude>
+                        <exclude>**/JwtAuthenticationFilter*.class</exclude>
+                        <exclude>**/SecurityConfig*.class</exclude>
+                        <exclude>**/ProtubeBackApplication*.class</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
