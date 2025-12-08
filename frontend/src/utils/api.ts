@@ -1,5 +1,5 @@
 import axios, { type InternalAxiosRequestConfig } from 'axios';
-import { getEnv } from './env';
+import { getEnv } from './Env';
 import type { Video } from '@/types/videos';
 
 const TOKEN_KEY = 'protube_token';
