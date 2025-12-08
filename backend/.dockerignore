@@ -1,0 +1,32 @@
+# Maven build artifacts
+target/
+!target/*.jar
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Logs
+*.log
+
+# Maven wrapper
+.mvn/
+mvnw
+mvnw.cmd
+
