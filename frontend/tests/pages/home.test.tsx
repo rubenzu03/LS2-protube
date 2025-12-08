@@ -6,7 +6,14 @@ import { useAllVideos } from '@/hooks/video-hooks';
 import type { Video } from '@/types/videos';
 import type { Thumbnail } from '@/utils/api';
 
-jest.mock('@/hooks/video-hooks');
+jest.mock('@/hooks/video-hooks', () => ({
+  useAllVideos: jest.fn(),
+  useUserInfo: jest.fn(() => ({
+    user: { id: 'user123', username: 'TestUser' },
+    isLoading: false,
+    isError: false
+  }))
+}));
 jest.mock('@/hooks/use-document-title');
 jest.mock('@/utils/api');
 

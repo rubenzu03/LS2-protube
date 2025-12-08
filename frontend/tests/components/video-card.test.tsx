@@ -5,6 +5,13 @@ import type { Video } from '@/types/videos';
 import type { Thumbnail } from '@/utils/api';
 
 jest.mock('@/utils/api');
+jest.mock('@/hooks/video-hooks', () => ({
+  useUserInfo: jest.fn(() => ({
+    user: { id: 'user123', username: 'TestUser' },
+    isLoading: false,
+    isError: false
+  }))
+}));
 
 const mockVideo: Video = {
   id: '1',
@@ -73,7 +80,7 @@ describe('VideoCard', () => {
       </BrowserRouter>
     );
 
-    expect(screen.getByText('user123')).toBeInTheDocument();
+    expect(screen.getByText('TestUser')).toBeInTheDocument();
   });
 
   it('renders link to video page', () => {

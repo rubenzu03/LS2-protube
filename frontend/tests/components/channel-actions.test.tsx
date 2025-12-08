@@ -1,41 +1,81 @@
 import { render, screen } from '@testing-library/react';
 import { ChannelActions } from '@/components/video/channel-actions';
+import { BrowserRouter } from 'react-router';
+
+jest.mock('@/hooks/video-hooks', () => ({
+  useUserInfo: jest.fn(() => ({
+    user: { id: 'user123', username: 'TestUser' },
+    isLoading: false,
+    isError: false
+  }))
+}));
 
 describe('ChannelActions', () => {
   it('renders channel actions component', () => {
-    render(<ChannelActions />);
+    render(
+      <BrowserRouter>
+        <ChannelActions />
+      </BrowserRouter>
+    );
 
-    expect(screen.getByText('Uploader')).toBeInTheDocument();
+    expect(screen.getByText('TestUser')).toBeInTheDocument();
     expect(screen.getByText('Subscribe')).toBeInTheDocument();
   });
 
   it('displays uploader id when provided', () => {
-    render(<ChannelActions uploaderId="user123" />);
+    render(
+      <BrowserRouter>
+        <ChannelActions uploaderId="user123" />
+      </BrowserRouter>
+    );
 
-    expect(screen.getByText('user123')).toBeInTheDocument();
+    expect(screen.getByText('TestUser')).toBeInTheDocument();
   });
 
   it('displays "Unknown" when uploader id is not provided', () => {
-    render(<ChannelActions />);
+    const { useUserInfo } = require('@/hooks/video-hooks');
+    useUserInfo.mockReturnValueOnce({
+      user: null,
+      isLoading: false,
+      isError: false
+    });
+
+    render(
+      <BrowserRouter>
+        <ChannelActions />
+      </BrowserRouter>
+    );
 
     expect(screen.getByText('Unknown')).toBeInTheDocument();
   });
 
   it('renders like button', () => {
-    render(<ChannelActions />);
+    render(
+      <BrowserRouter>
+        <ChannelActions />
+      </BrowserRouter>
+    );
 
     expect(screen.getByText('Like')).toBeInTheDocument();
   });
 
   it('renders subscribe button', () => {
-    render(<ChannelActions uploaderId="test-user" />);
+    render(
+      <BrowserRouter>
+        <ChannelActions uploaderId="test-user" />
+      </BrowserRouter>
+    );
 
     const subscribeButton = screen.getByText('Subscribe');
     expect(subscribeButton).toBeInTheDocument();
   });
 
   it('renders channel avatar', () => {
-    render(<ChannelActions />);
+    render(
+      <BrowserRouter>
+        <ChannelActions />
+      </BrowserRouter>
+    );
 
     const avatar = screen.getByAltText('Channel avatar');
     expect(avatar).toBeInTheDocument();
