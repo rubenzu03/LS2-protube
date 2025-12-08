@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import { Layout } from '@/components/layout/layout';
 import { Button } from '@/components/ui/button';
-import { getEnv } from '@/utils/env';
+import { getEnv } from '@/utils/Env';
 import { api } from '@/utils/api';
 import { useDocumentTitle } from '@/hooks/use-document-title';
 

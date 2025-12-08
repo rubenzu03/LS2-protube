@@ -51,7 +51,7 @@ export function ChannelPage() {
       <div className="space-y-8">
         {/* Channel Header */}
         <div className="flex items-center gap-6 rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-background p-8 border border-border/50">
-          <div className="h-32 w-32 overflow-hidden rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-5xl font-bold shadow-lg">
+          <div className="h-32 w-32 overflow-hidden rounded-full bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white text-5xl font-bold shadow-lg">
             {user.username ? user.username[0].toUpperCase() : '?'}
           </div>
           <div className="flex-1">

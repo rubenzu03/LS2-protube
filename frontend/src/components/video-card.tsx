@@ -68,10 +68,10 @@ export function VideoCard({ video, thumbnail }: Props) {
       <div className="flex gap-3 p-3">
         <Link
           to={`/channel/${video.userId}`}
-          className="mt-0.5 h-9 w-9 overflow-hidden rounded-full bg-muted hover:opacity-80 transition-opacity"
+          className="mt-0.5 h-9 w-9 overflow-hidden rounded-full bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white text-sm font-bold hover:opacity-80 transition-opacity"
           onClick={(e) => e.stopPropagation()}
         >
-          <img src="/abstract-channel-avatar.png" alt={channelLabel} className="h-full w-full object-cover" />
+          {channelLabel[0]?.toUpperCase() || '?'}
         </Link>
         <div className="min-w-0 flex-1">
           <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug group-hover:text-foreground/90">
