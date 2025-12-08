@@ -11,6 +11,17 @@ type Props = {
 
 const TOKEN_KEY = 'protube_token';
 
+function getUsernameFromToken(token: string | null): string | null {
+  if (!token) return null;
+  try {
+    const payload = token.split('.')[1];
+    const decoded = JSON.parse(atob(payload));
+    return decoded.sub || null;
+  } catch {
+    return null;
+  }
+}
+
 export function CommentsSection({ videoId }: Props) {
   const { comments, loading } = useVideoComments(videoId);
   const createComment = useCreateComment(videoId);
@@ -19,16 +30,22 @@ export function CommentsSection({ videoId }: Props) {
   const [hasToken, setHasToken] = useState<boolean>(() => {
     return typeof window !== 'undefined' && !!window.localStorage.getItem(TOKEN_KEY);
   });
+  const [username, setUsername] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return getUsernameFromToken(window.localStorage.getItem(TOKEN_KEY));
+  });
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem(TOKEN_KEY);
     setHasToken(!!token);
+    setUsername(getUsernameFromToken(token));
 
     const handleStorage = (event: StorageEvent) => {
       if (event.key === TOKEN_KEY) {
         setHasToken(!!event.newValue);
+        setUsername(getUsernameFromToken(event.newValue));
       }
     };
 
@@ -54,7 +71,9 @@ export function CommentsSection({ videoId }: Props) {
 
       {hasToken ? (
         <div className="flex gap-3">
-          <div className="h-9 w-9 rounded-full bg-muted" />
+          <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white text-sm font-bold">
+            {username?.[0]?.toUpperCase() || '?'}
+          </div>
           <div className="flex-1 space-y-2">
             <textarea
               value={content}
@@ -104,21 +123,24 @@ export function CommentsSection({ videoId }: Props) {
         {loading === 'success' && comments.length === 0 && (
           <p className="text-xs text-muted-foreground">No comments yet. Be the first to comment!</p>
         )}
-        {comments.map((comment: Comment) => (
-          <div key={comment.id} className="flex gap-3">
-            <div className="h-9 w-9 rounded-full bg-muted" />
-            <div className="flex-1 space-y-1">
-              <p className="text-xs font-semibold">
-                {comment.username && comment.username.trim().length > 0
-                  ? comment.username
-                  : comment.userId != null
-                    ? `User #${comment.userId}`
-                    : 'Anonymous'}
-              </p>
-              <p className="text-sm text-foreground">{comment.content}</p>
+        {comments.map((comment: Comment) => {
+          const commentUsername = comment.username && comment.username.trim().length > 0
+            ? comment.username
+            : comment.userId != null
+              ? `User #${comment.userId}`
+              : 'Anonymous';
+          return (
+            <div key={comment.id} className="flex gap-3">
+              <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white text-sm font-bold">
+                {commentUsername[0]?.toUpperCase() || '?'}
+              </div>
+              <div className="flex-1 space-y-1">
+                <p className="text-xs font-semibold">{commentUsername}</p>
+                <p className="text-sm text-foreground">{comment.content}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

@@ -22,8 +22,8 @@ export function ChannelActions({ uploaderId }: Props) {
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
         <Link to={`/channel/${uploaderId}`}>
-          <div className="h-10 w-10 overflow-hidden rounded-full bg-muted">
-            <img src="/abstract-channel-avatar.png" alt="Channel avatar" className="h-full w-full object-cover" />
+          <div className="h-10 w-10 overflow-hidden rounded-full bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white text-sm font-bold hover:opacity-80 transition-opacity">
+            {uploaderName[0]?.toUpperCase() || '?'}
           </div>
         </Link>
         <Link to={`/channel/${uploaderId}`}>
@@ -32,7 +32,7 @@ export function ChannelActions({ uploaderId }: Props) {
             <span className="max-w-[200px] truncate text-xs text-muted-foreground">@{uploaderName.toLowerCase().replace(/\s+/g, '')}</span>
           </div>
         </Link>
-        <Button className="ml-4 font-medium rounded-full bg-white text-black hover:bg-white/90 dark:bg-white dark:text-black">
+        <Button className="ml-4 font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90">
           Subscribe
         </Button>
       </div>

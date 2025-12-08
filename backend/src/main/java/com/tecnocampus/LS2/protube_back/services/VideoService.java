@@ -84,6 +84,11 @@ public class VideoService {
                     .orElse(0L);
             video.setId(maxId + 1);
         }
+        // Set the user if userId is provided
+        if (videoDTO.userId() != null) {
+            User user = userRepository.findById(videoDTO.userId()).orElse(null);
+            video.setUser(user);
+        }
         Video saved = videoRepository.save(video);
         return toDTO(saved);
     }

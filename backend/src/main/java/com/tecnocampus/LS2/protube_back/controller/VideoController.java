@@ -2,6 +2,8 @@ package com.tecnocampus.LS2.protube_back.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.tecnocampus.LS2.protube_back.domain.User;
+import com.tecnocampus.LS2.protube_back.persistence.UserRepository;
 import com.tecnocampus.LS2.protube_back.persistence.dto.ThumbnailDTO;
 import com.tecnocampus.LS2.protube_back.persistence.dto.VideoDTO;
 import com.tecnocampus.LS2.protube_back.services.VideoService;
@@ -12,6 +14,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ws.schild.jave.MultimediaObject;
@@ -35,6 +39,9 @@ public class VideoController {
 
     @Autowired
     VideoService videoService;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Value("${pro_tube.store.dir}")
     private String storeDir;
@@ -136,6 +143,12 @@ public class VideoController {
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "description", required = false) String description) {
         try {
+            // Get the authenticated user
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth != null ? auth.getName() : null;
+            User currentUser = username != null ? userRepository.findByUsername(username) : null;
+            Long userId = currentUser != null ? currentUser.getId() : null;
+
             String originalFilename = Objects.requireNonNull(file.getOriginalFilename());
             String extension = getFileExtension(originalFilename);
             String uniqueFilename = UUID.randomUUID() + extension;
@@ -182,7 +195,7 @@ public class VideoController {
                     duration,
                     description,
                     uniqueFilename,
-                    null, // userId
+                    userId, // userId from authenticated user
                     null, // categoryId
                     null, // tagId
                     null // commentId
@@ -193,7 +206,8 @@ public class VideoController {
             // Generate thumbnail and JSON metadata (best effort, don't fail upload if these
             // fail)
             generateThumbnail(targetPath.toString(), storePath.resolve(baseName + ".webp").toString());
-            generateJsonMetadata(storePath.resolve(baseName + ".json").toString(), savedVideo, title, description);
+            generateJsonMetadata(storePath.resolve(baseName + ".json").toString(), savedVideo, title, description,
+                    username);
 
             return ResponseEntity.status(201).body(savedVideo);
 
@@ -218,7 +232,8 @@ public class VideoController {
         }
     }
 
-    private void generateJsonMetadata(String jsonPath, VideoDTO video, String title, String description) {
+    private void generateJsonMetadata(String jsonPath, VideoDTO video, String title, String description,
+            String username) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode root = mapper.createObjectNode();
@@ -227,7 +242,7 @@ public class VideoController {
             root.put("height", (int) video.height());
             root.put("duration", video.duration());
             root.put("title", title);
-            root.put("user", "uploaded");
+            root.put("user", username != null ? username : "anonymous");
 
             ObjectNode meta = mapper.createObjectNode();
             meta.put("description", description != null ? description : "");
