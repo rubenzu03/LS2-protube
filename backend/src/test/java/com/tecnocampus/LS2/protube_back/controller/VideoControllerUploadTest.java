@@ -71,14 +71,14 @@ public class VideoControllerUploadTest {
     }
 
     @Test
-    void uploadVideo_serviceThrows_returnsBadRequest() throws Exception {
+    void uploadVideo_serviceThrows_returnsInternalServerError() throws Exception {
         byte[] content = "bad content".getBytes(StandardCharsets.UTF_8);
         MockMultipartFile file = new MockMultipartFile("file", "test.mp4", "video/mp4", content);
 
         when(videoService.createVideo(ArgumentMatchers.any(VideoDTO.class))).thenThrow(new RuntimeException("boom"));
 
         mockMvc.perform(multipart("/api/videos/upload").file(file))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isInternalServerError());
 
         verify(videoService, times(1)).createVideo(any(VideoDTO.class));
     }
