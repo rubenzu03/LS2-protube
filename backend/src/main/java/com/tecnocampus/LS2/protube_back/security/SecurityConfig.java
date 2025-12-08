@@ -40,6 +40,7 @@ public class SecurityConfig {
                                 "/api/comments/**",
                                 "/api/category/**",
                                 "/api/tags/**",
+                                "/api/user/**",
                                 "/api/hello")
                         .permitAll()
                         // everything else requires authentication (e.g. POST/PUT/DELETE)

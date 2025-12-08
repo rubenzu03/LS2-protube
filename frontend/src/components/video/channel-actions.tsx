@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router';
 import {
   HandThumbUpIcon,
   HandThumbDownIcon,
@@ -16,13 +17,17 @@ export function ChannelActions({ uploaderId }: Props) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
-        <div className="h-10 w-10 overflow-hidden rounded-full bg-muted">
-          <img src="/abstract-channel-avatar.png" alt="Channel avatar" className="h-full w-full object-cover" />
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold">Uploader</span>
-          <span className="max-w-[200px] truncate text-xs text-muted-foreground">{uploaderId ?? 'Unknown'}</span>
-        </div>
+        <Link to={`/channel/${uploaderId}`}>
+          <div className="h-10 w-10 overflow-hidden rounded-full bg-muted">
+            <img src="/abstract-channel-avatar.png" alt="Channel avatar" className="h-full w-full object-cover" />
+          </div>
+        </Link>
+        <Link to={`/channel/${uploaderId}`}>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold">Uploader</span>
+            <span className="max-w-[200px] truncate text-xs text-muted-foreground">{uploaderId ?? 'Unknown'}</span>
+          </div>
+        </Link>
         <Button className="ml-4 font-medium rounded-full bg-white text-black hover:bg-white/90 dark:bg-white dark:text-black">
           Subscribe
         </Button>
