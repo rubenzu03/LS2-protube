@@ -4,6 +4,7 @@ import { getThumbnail, getVideoStreamUrl } from '@/utils/api';
 import { Link } from 'react-router';
 import { CheckBadgeIcon } from '@heroicons/react/24/solid';
 import { useRef, useState } from 'react';
+import { useUserInfo } from '@/hooks/video-hooks';
 
 type Props = {
   video: Video;
@@ -15,7 +16,8 @@ export function VideoCard({ video, thumbnail }: Props) {
   const durationLabel = `${Math.floor(video.duration / 60)}:${Math.floor(video.duration % 60)
     .toString()
     .padStart(2, '0')}`;
-  const channelLabel = video.userId || 'Channel';
+  const { user } = useUserInfo(video.userId);
+  const channelLabel = user?.username || 'Channel';
   const [showPreview, setShowPreview] = useState(false);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previewRef = useRef<HTMLVideoElement | null>(null);
@@ -31,7 +33,7 @@ export function VideoCard({ video, thumbnail }: Props) {
           const el = previewRef.current;
           if (el) {
             el.currentTime = 0;
-            el.play().catch(() => {});
+            el.play().catch(() => { });
           }
         }, PREVIEW_DELAY_MS);
       }}

@@ -131,3 +131,20 @@ export function useUploadVideo() {
     }
   });
 }
+
+export function useUserInfo(userId: string | undefined) {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: async (): Promise<User> => {
+      const response = await api.get<User>(`/user/byId/${userId}`);
+      return response.data;
+    },
+    enabled: !!userId
+  });
+
+  return {
+    user: data ?? null,
+    isLoading,
+    isError
+  };
+}
