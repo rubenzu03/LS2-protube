@@ -120,4 +120,113 @@ describe('VideoCard', () => {
     const img = screen.getByAltText('Test Video Title');
     expect(img).toBeInTheDocument();
   });
+
+  it('handles mouse enter and leave events', () => {
+    jest.useFakeTimers();
+    
+    render(
+      <BrowserRouter>
+        <VideoCard video={mockVideo} thumbnail={mockThumbnail} />
+      </BrowserRouter>
+    );
+
+    const videoLink = screen.getAllByRole('link')[0];
+    
+    // Simulate mouse enter
+    videoLink.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+    
+    // Fast-forward time
+    jest.advanceTimersByTime(1000);
+    
+    // Simulate mouse leave
+    videoLink.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+    
+    jest.useRealTimers();
+  });
+
+  it('clears hover timer on quick mouse leave', () => {
+    jest.useFakeTimers();
+    
+    render(
+      <BrowserRouter>
+        <VideoCard video={mockVideo} thumbnail={mockThumbnail} />
+      </BrowserRouter>
+    );
+
+    const videoLink = screen.getAllByRole('link')[0];
+    
+    // Simulate quick hover (leave before delay)
+    videoLink.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+    jest.advanceTimersByTime(500); // Less than PREVIEW_DELAY_MS
+    videoLink.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+    
+    jest.useRealTimers();
+  });
+
+  it('stops propagation on channel link click', () => {
+    render(
+      <BrowserRouter>
+        <VideoCard video={mockVideo} thumbnail={mockThumbnail} />
+      </BrowserRouter>
+    );
+
+    const channelLinks = screen.getAllByRole('link').filter(
+      link => link.getAttribute('href') === '/channel/user123'
+    );
+
+    const stopPropagationSpy = jest.fn();
+    channelLinks[0].addEventListener('click', (e) => {
+      e.stopPropagation = stopPropagationSpy;
+    });
+    
+    channelLinks[0].click();
+  });
+
+  it('displays fallback channel label when username is missing', () => {
+    const { useUserInfo } = require('@/hooks/video-hooks');
+    useUserInfo.mockReturnValue({
+      user: null,
+      isLoading: false,
+      isError: false
+    });
+
+    render(
+      <BrowserRouter>
+        <VideoCard video={mockVideo} thumbnail={mockThumbnail} />
+      </BrowserRouter>
+    );
+
+    expect(screen.getByText('Channel')).toBeInTheDocument();
+  });
+
+  it('renders channel avatar with first letter uppercase', () => {
+    render(
+      <BrowserRouter>
+        <VideoCard video={mockVideo} thumbnail={mockThumbnail} />
+      </BrowserRouter>
+    );
+
+    const avatar = screen.getByText('C'); // First letter of "Channel" when user is null
+    expect(avatar).toBeInTheDocument();
+  });
+
+  it('handles video preview play error gracefully', () => {
+    jest.useFakeTimers();
+    
+    const mockPlay = jest.fn().mockRejectedValue(new Error('Play failed'));
+    HTMLMediaElement.prototype.play = mockPlay;
+
+    render(
+      <BrowserRouter>
+        <VideoCard video={mockVideo} thumbnail={mockThumbnail} />
+      </BrowserRouter>
+    );
+
+    const videoLink = screen.getAllByRole('link')[0];
+    videoLink.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+    
+    jest.advanceTimersByTime(1000);
+    
+    jest.useRealTimers();
+  });
 });

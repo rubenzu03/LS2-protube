@@ -299,3 +299,4 @@ describe('SearchPage', () => {
     expect(screen.getByText('Type something in the search bar to find videos.')).toBeInTheDocument();
   });
 });
+

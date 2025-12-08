@@ -70,15 +70,16 @@ describe('ChannelActions', () => {
     expect(subscribeButton).toBeInTheDocument();
   });
 
-  it('renders channel avatar', () => {
+  it('renders channel avatar placeholder', () => {
     render(
       <BrowserRouter>
-        <ChannelActions />
+        <ChannelActions uploaderId="test-id" />
       </BrowserRouter>
     );
 
-    const avatar = screen.getByAltText('Channel avatar');
-    expect(avatar).toBeInTheDocument();
-    expect(avatar).toHaveAttribute('src', '/abstract-channel-avatar.png');
+    // The component uses a div with gradient background, not an img tag
+    const avatarContainer = screen.getByText('T').closest('div');
+    expect(avatarContainer).toBeInTheDocument();
+    expect(avatarContainer).toHaveClass('rounded-full');
   });
 });

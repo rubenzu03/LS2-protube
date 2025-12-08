@@ -182,4 +182,27 @@ describe('VideoPlayer', () => {
     expect(source).toHaveAttribute('src', 'test.mp4');
     expect(source).toHaveAttribute('type', 'video/mp4');
   });
+
+  it('handles volume change event when unmuting with volume jump', async () => {
+    localStorage.setItem('protube_volume', '0.7');
+    localStorage.setItem('protube_muted', 'true');
+
+    render(<VideoPlayer src="test.mp4" />);
+    const video = screen.getByTestId('video-player') as HTMLVideoElement;
+
+    fireEvent.canPlay(video);
+
+    await waitFor(() => {
+      expect(video).toHaveAttribute('controls');
+    });
+
+    // Simulate unmuting with volume jump to 1
+    Object.defineProperty(video, 'muted', { value: false, writable: true });
+    Object.defineProperty(video, 'volume', { value: 1, writable: true });
+
+    fireEvent.volumeChange(video);
+
+    // Should restore to last volume
+    expect(localStorage.getItem('protube_muted')).toBe('false');
+  });
 });
