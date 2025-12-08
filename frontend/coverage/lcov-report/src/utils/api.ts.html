@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/54</span>
+                <span class='fraction'>0/62</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>0/15</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/43</span>
+                <span class='fraction'>0/49</span>
             </div>
         
             
@@ -147,7 +147,22 @@
 <a name='L82'></a><a href='#L82'>82</a>
 <a name='L83'></a><a href='#L83'>83</a>
 <a name='L84'></a><a href='#L84'>84</a>
-<a name='L85'></a><a href='#L85'>85</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -229,6 +244,21 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import axios, { type InternalAxiosRequestConfig } from 'axios';</span>
@@ -309,11 +339,26 @@ export type UploadVideoPayload = {
 &nbsp;
 export const <span class="cstat-no" title="statement not covered" >uploadVideo = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >a</span>sync ({</span> file, title, description }: UploadVideoPayload) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {</span></span></span>
   const formData = <span class="cstat-no" title="statement not covered" >new FormData();</span>
-<span class="cstat-no" title="statement not covered" >  formData.append('file', file);</span>
-<span class="cstat-no" title="statement not covered" >  formData.append('title', title);</span>
-<span class="cstat-no" title="statement not covered" >  formData.append('description', description);</span>
-  const response = <span class="cstat-no" title="statement not covered" >await api.post&lt;Video&gt;('/videos/upload', formData);</span>
-<span class="cstat-no" title="statement not covered" >  return response.data;</span>
+<span class="cstat-no" title="statement not covered" >  formData.append('file', file, file.name);</span>
+<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (title) <span class="cstat-no" title="statement not covered" >formData.append('title', title);</span></span>
+<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (description) <span class="cstat-no" title="statement not covered" >formData.append('description', description);</span></span>
+  const token = <span class="cstat-no" title="statement not covered" >window.localStorage.getItem('protube_token');</span>
+  const headers: HeadersInit = <span class="cstat-no" title="statement not covered" >{};</span>
+<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (token) {</span>
+<span class="cstat-no" title="statement not covered" >    headers['Authorization'] = `Bearer ${token}`;</span>
+  }
+&nbsp;
+  const response = <span class="cstat-no" title="statement not covered" >await fetch(`${API_BASE_URL}/videos/upload`, {</span>
+    method: 'POST',
+    headers,
+    body: formData
+  });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (!response.ok) {</span>
+<span class="cstat-no" title="statement not covered" >    throw new Error(`Upload failed: ${response.status}`);</span>
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return response.json() as Promise&lt;Video&gt;;</span>
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -322,7 +367,7 @@ export const <span class="cstat-no" title="statement not covered" >uploadVideo =
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-08T21:26:35.209Z
+                at 2025-12-08T21:54:51.221Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
