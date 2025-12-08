@@ -77,8 +77,23 @@ export type UploadVideoPayload = {
 export const uploadVideo = async ({ file, title, description }: UploadVideoPayload) => {
   const formData = new FormData();
   formData.append('file', file, file.name);
-  formData.append('title', title || '');
-  formData.append('description', description || '');
-  const response = await api.post<Video>('/videos/upload', formData);
-  return response.data;
+  if (title) formData.append('title', title);
+  if (description) formData.append('description', description);
+  const token = window.localStorage.getItem('protube_token');
+  const headers: HeadersInit = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/videos/upload`, {
+    method: 'POST',
+    headers,
+    body: formData
+  });
+
+  if (!response.ok) {
+    throw new Error(`Upload failed: ${response.status}`);
+  }
+
+  return response.json() as Promise<Video>;
 };
