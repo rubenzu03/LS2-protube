@@ -69,4 +69,3 @@ Write-Host "Press Ctrl+C to stop the containers when done." -ForegroundColor Cya
 Write-Host ""
 
 docker-compose up
-
