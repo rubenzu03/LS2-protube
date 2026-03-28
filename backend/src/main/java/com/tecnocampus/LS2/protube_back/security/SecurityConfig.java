@@ -43,8 +43,9 @@ public class SecurityConfig {
                                 "/api/user/**",
                                 "/api/hello")
                         .permitAll()
+                        .requestMatchers("/api/**").authenticated()
                         // everything else requires authentication (e.g. POST/PUT/DELETE)
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
